@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SontlyX Network | Yakında Sizlerleyiz</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    min-height: 100vh; display: flex; justify-content: center; align-items: center;
+    overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #111318;
+}
+.background {
+    position: fixed; inset: 0;
+    background: linear-gradient(rgba(12,14,18,.55), rgba(12,14,18,.78)),
+                url("arkaplan.jpg") center center / cover no-repeat;
+    transform: scale(1.04);
+    animation: backgroundMove 18s ease-in-out infinite alternate;
+    z-index: -2;
+}
+.background::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,.45) 100%);
+}
+.sontlyx-coming {
+    position: relative; width: min(90%, 680px); padding: 65px 30px; text-align: center;
+    overflow: hidden; border: 1px solid rgba(255,255,255,.18); border-radius: 30px;
+    background: rgba(25,27,32,.55); backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 25px 80px rgba(0,0,0,.4), inset 0 1px 1px rgba(255,255,255,.12);
+    animation: boxAppear 1.2s cubic-bezier(.2,.8,.2,1), boxFloat 5s ease-in-out 1.2s infinite;
+}
+.sontlyx-coming::before {
+    content: ""; position: absolute; top: -100%; left: -60%; width: 70%; height: 300%;
+    transform: rotate(25deg);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.13), transparent);
+    animation: shine 6s ease-in-out infinite; pointer-events: none;
+}
+.sx-label {
+    color: #c4c8d0; font-size: 11px; font-weight: 700; letter-spacing: 6px;
+    margin-bottom: 27px; animation: fadeUp 1s .3s both;
+}
+.sx-title {
+    color: #fff; font-size: clamp(25px, 5vw, 43px); font-weight: 850;
+    letter-spacing: 1.5px; line-height: 1.25;
+    text-shadow: 0 3px 25px rgba(0,0,0,.5); animation: fadeUp 1s .5s both;
+}
+.sx-dots span { display: inline-block; animation: dotAnimation 1.5s infinite; }
+.sx-dots span:nth-child(2) { animation-delay: .2s; }
+.sx-dots span:nth-child(3) { animation-delay: .4s; }
+.sx-description {
+    margin-top: 20px; color: #d0d2d8; font-size: 14px; letter-spacing: .4px;
+    animation: fadeUp 1s .7s both;
+}
+.sx-status {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 32px; padding: 11px 19px;
+    border: 1px solid rgba(120,220,210,.3); border-radius: 50px;
+    background: rgba(114,217,206,.09); color: #d8f1ed;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    animation: fadeUp 1s .9s both;
+}
+.sx-status i {
+    display: block; width: 8px; height: 8px; border-radius: 50%;
+    background: #72d9ce; box-shadow: 0 0 13px #72d9ce; animation: pulse 1.5s infinite;
+}
+/* ADMIN GİRİŞİ */
+.sx-admin {
+    margin-top: 30px; padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    animation: fadeUp 1s 1.1s both;
+}
+.sx-admin label {
+    display: block; color: rgba(255,255,255,.6); font-size: 10.5px;
+    letter-spacing: 3px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase;
+}
+.sx-admin input {
+    width: min(100%, 280px); min-height: 42px; padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.18); border-radius: 12px;
+    background: rgba(0,0,0,.45); color: #fff; font: 500 14px inherit;
+    outline: none; text-align: center; letter-spacing: 2px;
+    transition: border-color .3s, box-shadow .3s;
+}
+.sx-admin input:focus {
+    border-color: #72d9ce; box-shadow: 0 0 0 4px rgba(114,217,206,.15);
+}
+.sx-admin-msg {
+    margin-top: 10px; font-size: 12px; min-height: 16px;
+    color: #ff8a80; letter-spacing: .3px;
+}
+.sx-activate-btn {
+    display: none; margin: 14px auto 0; min-height: 44px; padding: 0 22px;
+    border: 0; border-radius: 50px; cursor: pointer;
+    font: 700 14px inherit; letter-spacing: .5px;
+    color: #071312; background: linear-gradient(180deg, #8ef0e4, #4fcfc0);
+    box-shadow: 0 10px 30px -8px rgba(114,217,206,.55);
+    transition: transform .3s, box-shadow .3s;
+    animation: fadeUp .5s both;
+}
+.sx-activate-btn.show { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.sx-activate-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 16px 40px -8px rgba(114,217,206,.7); }
+.sx-activate-btn:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+.sx-footer {
+    position: absolute; bottom: 24px; left: 0; width: 100%; text-align: center;
+    color: rgba(255,255,255,.55); font-size: 10px; letter-spacing: 3px;
+}
+@keyframes boxAppear {
+    from { opacity: 0; transform: translateY(35px) scale(.94); filter: blur(12px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes boxFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes shine { 0% { left: -80%; } 45%,100% { left: 150%; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dotAnimation { 0%,60%,100% { opacity: .25; } 30% { opacity: 1; } }
+@keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.75); } }
+@keyframes backgroundMove { from { transform: scale(1.04) translateX(-5px); } to { transform: scale(1.12) translateX(5px); } }
+@media (max-width: 600px) {
+    .sontlyx-coming { padding: 50px 20px; border-radius: 23px; }
+    .sx-label { letter-spacing: 4px; }
+    .sx-description { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="background"></div>
+
+<div class="sontlyx-coming">
+    <div class="sx-label">SONTLYX NETWORK</div>
+    <h1 class="sx-title">
+        YAKINDA SİZLERLEYİZ<span class="sx-dots"><span>.</span><span>.</span><span>.</span></span>
+    </h1>
+    <p class="sx-description">Yeni deneyim çok yakında burada.</p>
+    <div class="sx-status"><i></i>HAZIRLANIYOR</div>
+
+    <!-- ADMIN GİRİŞİ -->
+    <div class="sx-admin">
+        <label>Admin Girişi</label>
+        <input id="maintPass" type="password" placeholder="••••••••" autocomplete="off" maxlength="64">
+        <div class="sx-admin-msg" id="maintMsg"></div>
+        <button class="sx-activate-btn" id="activateBtn" onclick="activateSite()">🔓 Siteyi Aktifleştir</button>
+    </div>
+</div>
+
+<div class="sx-footer">SONTLYX NETWORK © 2026</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD7jQUsoZsDC8Z9iiaEbAvI4ZVxkBSBr4c",
+  authDomain: "sontlyxnetwork.firebaseapp.com",
+  projectId: "sontlyxnetwork",
+  storageBucket: "sontlyxnetwork.firebasestorage.app",
+  messagingSenderId: "569986419300",
+  appId: "1:569986419300:web:59b7aef5b1099860fb2d71",
+  measurementId: "G-5E0SZW1K0C"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const MAINT_PASS = 'mmz2866bg';
+const input = document.getElementById('maintPass');
+const msg = document.getElementById('maintMsg');
+const btn = document.getElementById('activateBtn');
+
+// Sayfa açıldığında bakım gerçekten açık mı kontrol et
+// (Kullanıcı direkt URL'ye gelmiş olabilir)
+(async () => {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'maintenance'));
+    if (!snap.exists() || !snap.data().enabled) {
+      // Bakım kapalıysa ana siteye dön
+      window.location.replace('index.html');
+    }
+  } catch (e) {
+    console.warn('Bakım durumu okunamadı:', e);
+  }
+})();
+
+input.addEventListener('input', () => {
+    const val = input.value.trim();
+    if (val === MAINT_PASS) {
+        msg.textContent = '';
+        btn.classList.add('show');
+    } else {
+        btn.classList.remove('show');
+        if (val.length === 0) msg.textContent = '';
+        else msg.textContent = 'Şifre hatalı.';
+    }
+});
+
+input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && btn.classList.contains('show')) activateSite();
+});
+
+async function activateSite() {
+    if (input.value.trim() !== MAINT_PASS) {
+        msg.textContent = 'Şifre hatalı.';
+        return;
+    }
+    btn.disabled = true;
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '⏳ Aktifleştiriliyor...';
+    try {
+        await setDoc(doc(db, 'settings', 'maintenance'), {
+            enabled: false,
+            updatedAt: new Date().toISOString(),
+            updatedBy: 'founder'
+        }, { merge: true });
+        msg.style.color = '#a6f0b6';
+        msg.textContent = '✓ Site aktifleştirildi. Yönlendiriliyorsun...';
+        setTimeout(() => { window.location.href = 'index.html'; }, 900);
+    } catch (err) {
+        console.error(err);
+        msg.style.color = '#ff8a80';
+        msg.textContent = 'Hata: ' + (err.message || 'Bilinmeyen hata');
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+    }
+}
+
+// Global erişim
+window.activateSite = activateSite;
+</script>
+
+</body>
+</html>
