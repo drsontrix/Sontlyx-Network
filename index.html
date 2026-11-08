@@ -594,7 +594,7 @@ img{-webkit-user-drag:none;user-select:none}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser
+  onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc,
@@ -602,18 +602,29 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDx4JdgUB36ZDzBZ-Q5T7Psu38e9J-m97",
-  authDomain: "sontlyxsite.firebaseapp.com",
-  projectId: "sontlyxsite",
-  storageBucket: "sontlyxsite.firebasestorage.app",
-  messagingSenderId: "740921197217",
-  appId: "1:740921197217:web:9117721a4f7b475b4566e0",
-  measurementId: "G-77B358CGYY"
+  apiKey: "AIzaSyD7jQUsoZsDC8Z9iiaEbAvI4ZVxkBSBr4c",
+  authDomain: "sontlyxnetwork.firebaseapp.com",
+  projectId: "sontlyxnetwork",
+  storageBucket: "sontlyxnetwork.firebasestorage.app",
+  messagingSenderId: "569986419300",
+  appId: "1:569986419300:web:59b7aef5b1099860fb2d71",
+  measurementId: "G-5E0SZW1K0C"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
+
+// Analytics is optional; authentication and Firestore work even if Analytics is unavailable.
+let analytics = null;
+try {
+  const analyticsModule = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js");
+  if (await analyticsModule.isSupported()) {
+    analytics = analyticsModule.getAnalytics(firebaseApp);
+  }
+} catch (analyticsError) {
+  console.warn("Firebase Analytics kullanılamıyor; giriş sistemi etkilenmez.", analyticsError);
+}
 const FB = {
   auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser,
@@ -732,6 +743,7 @@ async function submitAuth(type) {
 
       const userCred = await FB.createUserWithEmailAndPassword(FB.auth, email, pass);
       newlyCreatedUser = userCred.user;
+      await FB.updateProfile(userCred.user, { displayName: mcName });
       await FB.setDoc(FB.doc(FB.db, "users", userCred.user.uid), {
         mcName: mcName,
         email: email,
