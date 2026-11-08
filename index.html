@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>SontlyX Network</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09090B">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+
+/* === GRİ - SİYAH PALETİ === */
+:root{
+  --bg: #09090B;
+  --bg-image: url('arkaplan.jpg');
+  --panel: #121215;
+  --glass: rgba(24, 24, 27, 0.65);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-bright: rgba(255, 255, 255, 0.3);
+  --text: #F4F4F5;
+  --text-muted: #A1A1AA;
+  --shadow: 0 20px 50px -16px rgba(0,0,0,0.9);
+}
+
+/* === CROSSHAIR (NİŞANGAH) === */
+html, body, button, a, .btn, .card, input, textarea, select { 
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><g stroke="%23F4F4F5" stroke-width="2" stroke-linecap="round"><line x1="16" y1="4" x2="16" y2="11"/><line x1="16" y1="21" x2="16" y2="28"/><line x1="4" y1="16" x2="11" y2="16"/><line x1="21" y1="16" x2="28" y2="16"/></g><circle cx="16" cy="16" r="1.5" fill="%23F4F4F5"/></svg>') 16 16, auto !important; 
+}
+button:hover, a:hover, .btn:hover, .card:hover, input:focus, select:focus { 
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><g stroke="%23A1A1AA" stroke-width="2" stroke-linecap="round"><line x1="16" y1="4" x2="16" y2="11"/><line x1="16" y1="21" x2="16" y2="28"/><line x1="4" y1="16" x2="11" y2="16"/><line x1="21" y1="16" x2="28" y2="16"/></g><circle cx="16" cy="16" r="2" fill="%23F4F4F5"/></svg>') 16 16, pointer !important; 
+}
+button:active, a:active, .btn:active { 
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><g stroke="%23FFFFFF" stroke-width="3" stroke-linecap="round"><line x1="16" y1="2" x2="16" y2="11"/><line x1="16" y1="21" x2="16" y2="30"/><line x1="2" y1="16" x2="11" y2="16"/><line x1="21" y1="16" x2="30" y2="16"/></g><circle cx="16" cy="16" r="2.5" fill="%23F4F4F5"/></svg>') 16 16, pointer !important; 
+}
+
+html,body{background:var(--bg);color:var(--text);font-family:'Inter','Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+a{color:var(--text);text-decoration:none;transition:opacity .2s}
+a:hover{opacity:.8}
+button{border:0;background:none;color:inherit;font:inherit;padding:0}
+::selection{background:rgba(255,255,255,.2);color:#fff}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:99px;border:2px solid transparent;background-clip:content-box}
+img{-webkit-user-drag:none;user-select:none}
+
+/* ARKA PLAN */
+.sx{min-height:100vh;position:relative;overflow-x:hidden;display:flex;flex-direction:column;isolation:isolate;background-color:var(--bg);background-image:var(--bg-image);background-size:cover;background-position:center;background-attachment:fixed;background-repeat:no-repeat}
+.sx::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 50%, rgba(9,9,11,0.4) 0%, rgba(9,9,11,0.8) 100%);backdrop-filter:blur(3px)}
+
+.grid{position:absolute;inset:-100px 0 auto 0;height:900px;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:56px 56px;animation:gm 6s linear infinite;pointer-events:none;opacity:.35;mask-image:linear-gradient(#000,transparent 88%);-webkit-mask-image:linear-gradient(#000,transparent 88%)}
+@keyframes gm{to{background-position:0 56px}}
+
+@keyframes sxIn{from{opacity:0;transform:translateY(22px) scale(.985);filter:blur(10px)}to{opacity:1;transform:translateY(0) scale(1);filter:none}}
+@keyframes sxDrop{from{opacity:0;transform:translateY(-20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes sxSheet{from{opacity:0;transform:translateY(38px) scale(.93)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes sxFade{from{opacity:0}to{opacity:1}}
+@keyframes sxSheen{0%,14%{background-position:100% 0}64%,100%{background-position:0 0}}
+@keyframes sxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes sxPing{0%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}100%{box-shadow:0 0 0 13px rgba(255,255,255,0)}}
+@keyframes gr{from{width:35%}to{width:95%}}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* --- SAYFA GEÇİŞ ANİMASYONLARI --- */
+.page[data-page]{transition:opacity .35s ease, transform .35s ease, filter .35s ease}
+.page.page-exit{opacity:0;transform:translateY(-14px) scale(.985);filter:blur(8px);pointer-events:none}
+.page.page-enter{animation:pageEnter .55s cubic-bezier(.22,1,.36,1) both}
+@keyframes pageEnter{from{opacity:0;transform:translateY(28px) scale(.97);filter:blur(10px)}to{opacity:1;transform:translateY(0) scale(1);filter:none}}
+.hero.page-enter{animation:heroEnter .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes heroEnter{from{opacity:0;transform:translateY(40px) scale(.96);filter:blur(14px)}to{opacity:1;transform:translateY(0) scale(1);filter:none}}
+.page.page-enter > *{animation:pageContentEnter .55s cubic-bezier(.22,1,.36,1) both}
+.page.page-enter > *:nth-child(2){animation-delay:.045s}
+.page.page-enter > *:nth-child(3){animation-delay:.09s}
+.page.page-enter > *:nth-child(4){animation-delay:.135s}
+@keyframes pageContentEnter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.page[data-page],.page.page-enter,.hero.page-enter,.sx-swipe,.sx-swipe i{animation:none!important;transition:none!important}}
+
+.sx-swipe{position:fixed;inset:0;z-index:8000;pointer-events:none;display:flex;opacity:0}
+.sx-swipe.active{opacity:1}
+.sx-swipe i{flex:1;background:linear-gradient(180deg,#121215,#09090B,#121215);transform:translateY(101%);box-shadow:0 0 40px rgba(255,255,255,.05)}
+.sx-swipe.active i{animation:sxSwipe 1.1s cubic-bezier(.76,0,.24,1) forwards}
+.sx-swipe i:nth-child(2){animation-delay:.04s;background:linear-gradient(180deg,#000000,#121215,#000000)}
+.sx-swipe i:nth-child(3){animation-delay:.08s;background:linear-gradient(180deg,#27272A,#09090B,#27272A)}
+.sx-swipe i:nth-child(4){animation-delay:.12s;background:linear-gradient(180deg,#27272A,#09090B,#27272A)}
+.sx-swipe i:nth-child(5){animation-delay:.08s;background:linear-gradient(180deg,#000000,#121215,#000000)}
+.sx-swipe i:nth-child(6){animation-delay:.04s;background:linear-gradient(180deg,#121215,#09090B,#121215)}
+@keyframes sxSwipe{0%{transform:translateY(101%)}40%,60%{transform:translateY(0)}100%{transform:translateY(-101%)}}
+.sx-swipe-label{position:absolute;inset:0;display:grid;place-items:center;color:var(--text);font-size:44px;font-weight:800;letter-spacing:.3em;opacity:0;pointer-events:none;text-shadow:0 0 20px rgba(255,255,255,.3)}
+.sx-swipe.active .sx-swipe-label{animation:sxSwipeLabel 1.1s ease both}
+@keyframes sxSwipeLabel{0%,40%{opacity:0;letter-spacing:.5em;transform:scale(.9)}55%,65%{opacity:1;letter-spacing:.35em;transform:scale(1)}100%{opacity:0;letter-spacing:.2em;transform:scale(1.05)}}
+
+/* NAV */
+.nav{position:sticky;top:14px;z-index:100;width:min(1400px,calc(100% - 32px));margin:14px auto 0;min-height:72px;padding:10px 16px 10px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:16px;border:1px solid var(--border);border-radius:28px;background:var(--glass);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),var(--shadow);animation:sxDrop .9s cubic-bezier(.22,1,.36,1) both}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px;color:var(--text);white-space:nowrap;flex-shrink:0}
+.brand-logo{height:40px;width:auto;max-width:140px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6))}
+.nav-links{display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(0,0,0,.6);box-shadow:inset 0 1px 2px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.05);flex-shrink:1;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{padding:9px 16px;font-size:14.5px;font-weight:500;border-radius:999px;color:var(--text-muted);transition:background .4s,color .3s,transform .5s;white-space:nowrap}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,.1)}
+.nav-link.on{color:var(--text);background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.1));box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 4px 14px -4px rgba(0,0,0,.6)}
+.nav-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+/* PROFİL KUTUSU */
+.profile-btn{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border:1px solid rgba(255,255,255,.15);border-radius:99px;background:rgba(30,30,32,.6);transition:background .3s,border-color .3s;cursor:pointer}
+.profile-btn:hover{background:rgba(50,50,55,.8);border-color:rgba(255,255,255,.3)}
+.profile-head{width:32px;height:32px;border-radius:8px;image-rendering:pixelated;background:rgba(0,0,0,.4)}
+.profile-name{font-size:14px;font-weight:600;color:var(--text);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 22px;border-radius:999px;font-size:14.5px;font-weight:600;letter-spacing:-.01em;transition:transform .5s cubic-bezier(.34,1.42,.5,1),box-shadow .4s,background .4s,color .3s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px) scale(1.03)}
+.btn:active{transform:scale(.96)}
+.btn.b2{color:var(--text);border:1px solid rgba(255,255,255,.15);background:rgba(30,30,32,.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 26px -12px rgba(0,0,0,.65)}
+.btn.b2:hover{background:rgba(50,50,55,.8);border-color:rgba(255,255,255,.3)}
+.btn.b1{color:#09090B;background:linear-gradient(180deg,#FFFFFF 0%,#D4D4D8 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 -1px 0 rgba(0,0,0,.2),0 12px 30px -10px rgba(255,255,255,.2),0 16px 32px -14px rgba(0,0,0,.65)}
+.btn.b1:hover{box-shadow:inset 0 1px 0 #fff,0 16px 40px -10px rgba(255,255,255,.3),0 20px 36px -14px rgba(0,0,0,.7)}
+.btn-founder{border:1px solid rgba(255,255,255,.3)!important;color:var(--text)!important}
+.btn-sm{min-height:34px!important;padding:0 14px!important;font-size:12.5px!important;border-radius:10px!important}
+
+.page{padding:70px 24px 100px;max-width:1240px;margin:0 auto;width:100%;text-align:center;position:relative}
+.tag{font-size:12.5px;letter-spacing:.18em;font-weight:600;color:var(--text-muted);text-transform:uppercase;margin-bottom:14px;display:inline-block}
+.big{font-size:clamp(42px,7vw,76px);letter-spacing:-.042em;line-height:1.03;font-weight:700;margin:14px 0;color:var(--text)}
+.shine{background-image:linear-gradient(100deg,#A1A1AA 0%,#FFF 22%,#F4F4F5 32%,#A1A1AA 46%,#FFF 60%,#F4F4F5 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sxSheen 10s ease-in-out infinite}
+.lead{max-width:640px;margin:0 auto;color:var(--text-muted);font-size:19px;line-height:1.6}
+
+.card{position:relative;padding:32px;border:1px solid rgba(255,255,255,.1);border-radius:24px;text-align:center;background:var(--glass);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),var(--shadow);transition:transform .55s cubic-bezier(.34,1.42,.5,1),box-shadow .4s,border-color .3s}
+.card:hover{transform:translateY(-8px) scale(1.018);border-color:rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 34px 70px -18px rgba(0,0,0,.8),0 0 60px -10px rgba(255,255,255,.1)}
+.ic{width:58px;height:58px;margin:0 auto;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 10px 22px -8px rgba(0,0,0,.6);transition:transform .7s cubic-bezier(.34,1.42,.5,1);color:var(--text)}
+.card:hover .ic{transform:scale(1.1) rotate(-5deg);color:#000;background:#FFF;border-color:#FFF}
+.card h3{font-size:25px;margin:16px 0 10px;color:var(--text);letter-spacing:-.02em}
+.card h4{font-size:22px;margin:18px 0 10px;color:var(--text)}
+.card p{margin:0;color:var(--text-muted);line-height:1.6}
+.bar{height:5px;border-radius:99px;background:rgba(0,0,0,.6);overflow:hidden;margin-top:22px;box-shadow:inset 0 1px 1px rgba(0,0,0,.35)}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#A1A1AA,#FFF);animation:gr 3s ease-in-out infinite alternate}
+.pr{font-size:36px;font-weight:700;letter-spacing:-.03em;margin:16px 0 6px;color:var(--text)}
+.pk{padding:10px 0;border-top:1px solid rgba(255,255,255,.1);color:var(--text-muted);font-size:14.5px}
+
+.hero{padding:70px 24px 100px;max-width:1240px;margin:0 auto;width:100%;text-align:center;position:relative}
+.hero h1{font-size:clamp(60px,13vw,148px);letter-spacing:-.04em;line-height:1;font-weight:700;margin:32px 0 0}
+.hero h2{font-size:clamp(18px,3vw,44px);letter-spacing:.5em;font-weight:500;color:var(--text-muted);margin:6px -.5em 0 0;text-shadow:0 0 20px rgba(255,255,255,.2)}
+.hero .lead{margin:32px auto 0;font-size:21px;max-width:640px}
+.hero-btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:44px}
+.live-badge{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.15);background:rgba(18,18,21,.8);padding:10px 20px;border-radius:99px;font-size:14.5px;color:var(--text);backdrop-filter:blur(20px)}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#FFF;animation:sxPing 2.4s ease-out infinite}
+.ip-box{margin:56px auto 0;max-width:520px;border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:18px 24px;background:var(--glass);backdrop-filter:blur(22px);display:flex;justify-content:space-between;align-items:center;gap:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 30px -12px rgba(0,0,0,.6)}
+.ip-box .label{color:var(--text-muted);font-size:12.5px;letter-spacing:.14em;font-weight:700}
+.ip-box .value{font-size:22px;font-weight:700;letter-spacing:.01em;color:var(--text)}
+.ip-copy{min-height:34px!important;padding:0 12px!important;font-size:12px!important;border-radius:10px!important}
+
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:48px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;margin-top:32px}
+.marquee-strip{position:relative;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.4);padding:26px 0;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.mq{display:flex;gap:64px;white-space:nowrap;width:max-content;animation:mq 22s linear infinite;font-size:28px;font-weight:700;color:rgba(255,255,255,.15);letter-spacing:.04em}
+
+.admin-card{width:min(100%,320px);padding:32px 24px;border:1px solid rgba(255,255,255,.15);border-radius:22px;margin:0 auto}
+.admin-avatar{width:92px;height:92px;margin:0 auto 18px;border-radius:26px;overflow:hidden;position:relative;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 18px 36px -12px rgba(0,0,0,.7)}
+.admin-avatar img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.admin-avatar.unavailable::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font-size:36px;color:var(--text-muted)}
+.admin-name{font-size:26px;font-weight:800;margin:8px 0 8px;color:var(--text)}
+.admin-role{color:var(--text-muted);font-size:12.5px;letter-spacing:.14em;font-weight:700;text-transform:uppercase}
+
+.overlay{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(9,9,11,.85);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);animation:sxFade .3s ease-out both;overflow-y:auto}
+.modal{width:min(100%,480px);padding:30px 28px;border:1px solid var(--border);border-radius:28px;background:var(--panel);text-align:left;box-shadow:0 30px 90px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);animation:sxSheet .55s cubic-bezier(.34,1.42,.5,1) both;max-height:calc(100dvh - 60px);overflow-y:auto}
+.modal h2{color:var(--text);font-size:22px;letter-spacing:-.02em;margin:0 0 6px;text-align:center}
+.modal .sub{color:var(--text-muted);font-size:13.5px;text-align:center;margin:0 0 22px;line-height:1.6}
+
+/* HESAP PANELİ */
+.account-panel{width:min(100%,560px);padding:32px 28px;border:1px solid var(--border);border-radius:28px;background:var(--panel);text-align:left;box-shadow:0 30px 90px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);animation:sxSheet .55s cubic-bezier(.34,1.42,.5,1) both;max-height:calc(100dvh - 60px);overflow-y:auto}
+.acc-header{display:flex;align-items:center;gap:20px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.acc-head-img{width:72px;height:72px;border-radius:16px;image-rendering:pixelated;background:rgba(0,0,0,.4);border:2px solid var(--border-bright);box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.acc-info h3{font-size:24px;font-weight:800;margin:0 0 4px;color:var(--text);letter-spacing:-.02em}
+.acc-info p{margin:0;color:var(--text-muted);font-size:14px}
+.acc-balance{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:16px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.acc-balance .lbl{color:var(--text-muted);font-size:14px;font-weight:600;letter-spacing:.05em}
+.acc-balance .val{font-size:28px;font-weight:800;color:#FFF;display:flex;align-items:center;gap:8px}
+.acc-balance .val span{font-size:16px;color:var(--text-muted)}
+.acc-section-title{font-size:16px;font-weight:700;color:var(--text);margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.acc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;max-height:200px;overflow-y:auto;padding-right:4px}
+.acc-item{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+.acc-item-left{display:flex;align-items:center;gap:12px}
+.acc-item-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:18px}
+.acc-item-name{font-size:14.5px;font-weight:600;color:var(--text)}
+.acc-item-date{font-size:12px;color:var(--text-muted)}
+.acc-item-price{font-size:14px;font-weight:700;color:var(--text)}
+.acc-empty{color:var(--text-muted);font-size:14px;text-align:center;padding:20px;background:rgba(255,255,255,.03);border:1px dashed var(--border);border-radius:12px}
+.acc-logout-btn{width:100%;justify-content:center;margin-top:10px;border-color:rgba(255,100,100,.3)!important;color:#ffb3ad!important}
+.acc-logout-btn:hover{background:rgba(255,50,50,.1)!important;border-color:rgba(255,50,50,.5)!important}
+
+.field{display:block;margin:0 0 14px;color:var(--text);font-size:13px;font-weight:600}
+.field input{display:block;width:100%;margin-top:8px;min-height:48px;padding:0 14px;border:1px solid rgba(255,255,255,.15);border-radius:14px;outline:none;color:var(--text);font:500 15px inherit;background:rgba(0,0,0,.5);box-shadow:inset 0 1px 3px rgba(0,0,0,.45);transition:border-color .3s,box-shadow .3s,background .3s}
+.field input:focus{border-color:#FFF;background:rgba(0,0,0,.6);box-shadow:inset 0 1px 3px rgba(0,0,0,.45),0 0 0 4px rgba(255,255,255,.1)}
+.field input::placeholder{color:rgba(161,161,170,.4)}
+
+.check{display:flex;align-items:flex-start;gap:9px;margin:6px 0 16px;color:var(--text-muted);font-size:13px;line-height:1.6}
+.check input{appearance:none;-webkit-appearance:none;width:20px;height:20px;margin-top:2px;flex:0 0 auto;border:1px solid rgba(255,255,255,.3);border-radius:7px;background:rgba(0,0,0,.4);position:relative;transition:background .3s,border-color .3s}
+.check input:checked{background:#FFF;border-color:#FFF}
+.check input:checked::after{content:"";position:absolute;left:5px;top:3px;width:8px;height:5px;border-left:2px solid #000;border-bottom:2px solid #000;transform:rotate(-45deg)}
+.check a{color:var(--text);text-decoration:underline}
+
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:4px;margin-bottom:16px;border-radius:16px;background:rgba(0,0,0,.5);position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,.45)}
+.auth-tabs::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.1));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 14px -3px rgba(0,0,0,.6);transition:transform .6s cubic-bezier(.34,1.42,.5,1);pointer-events:none}
+.auth-tabs[data-mode="register"]::before{transform:translateX(100%)}
+.auth-tab{position:relative;z-index:1;min-height:40px;border-radius:12px;color:var(--text-muted);font-weight:600;font-size:14px;transition:color .3s}
+.auth-tab.on{color:#fff}
+
+.notice{margin-top:14px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--text);font-size:12.5px;line-height:1.6;display:none;overflow-wrap:anywhere}
+.notice.show{display:block;animation:sxIn .4s ease both}
+.notice.error{border-color:rgba(255,100,100,.5);color:#ffb3ad;background:rgba(255,50,50,.1)}
+.notice.ok{border-color:rgba(50,215,75,.5);color:#a6f0b6;background:rgba(50,215,75,.1)}
+
+.bot-check{width:100%;min-height:50px;margin:14px 0 8px;border-radius:14px;border:1px dashed rgba(255,255,255,.2)!important;background:rgba(0,0,0,.4)!important;font-size:14px;font-weight:700;justify-content:center}
+.bot-check.done{border-style:solid!important;border-color:rgba(50,215,75,.5)!important;color:#a6f0b6!important}
+.bot-note{color:var(--text-muted);font-size:12px;text-align:center;margin:0 0 14px}
+
+.admin-panel{width:min(100%,880px);padding:28px;border:1px solid var(--border);border-radius:28px;background:var(--panel);box-shadow:0 34px 90px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05);animation:sxSheet .5s cubic-bezier(.34,1.42,.5,1) both;max-height:calc(100dvh - 60px);overflow-y:auto}
+.admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.admin-head h2{margin:0;font-size:22px;color:var(--text);letter-spacing:-.02em}
+.admin-tabs{display:flex;gap:6px;padding:4px;margin-bottom:18px;border-radius:14px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+.admin-tab{flex:1;min-height:42px;border-radius:10px;color:var(--text-muted);font-weight:700;font-size:13.5px;transition:background .3s,color .3s;min-width:100px}
+.admin-tab.on{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.1));color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.admin-list{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto;padding-right:6px}
+.admin-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(0,0,0,.4);transition:background .25s,border-color .25s}
+.admin-item:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.admin-item.banned{border-color:rgba(255,69,58,.4);background:rgba(255,69,58,.1)}
+.admin-item-info{display:flex;flex-direction:column;gap:3px;text-align:left;flex:1;min-width:0}
+.admin-item-name{color:var(--text);font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.admin-item.banned .admin-item-name{color:#ff8a80}
+.admin-item-meta{color:var(--text-muted);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge-ban{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:700;background:rgba(255,69,58,.2);color:#ff8a80;border:1px solid rgba(255,69,58,.4)}
+.admin-empty{text-align:center;color:var(--text-muted);padding:28px 10px;font-size:14px}
+.admin-form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.1)}
+.admin-form input{min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:rgba(0,0,0,.5);color:var(--text);font:500 14px inherit;outline:none}
+.admin-form input:focus{border-color:#FFF}
+.admin-form .btn{min-height:44px;padding:0 18px;border-radius:12px}
+
+.ban-screen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 30% 30%,rgba(120,0,0,.4),transparent 55%),radial-gradient(circle at 70% 70%,rgba(60,0,0,.5),transparent 60%),#070202;color:#fff;text-align:center}
+.ban-box{max-width:560px;padding:42px 30px;border:1px solid rgba(255,69,58,.5);border-radius:26px;background:linear-gradient(155deg,rgba(45,8,8,.95),rgba(20,4,4,.98));box-shadow:0 30px 90px rgba(0,0,0,.8),0 0 60px rgba(255,69,58,.2);animation:sxSheet .55s cubic-bezier(.34,1.42,.5,1) both}
+.ban-icon{font-size:64px;margin-bottom:14px;filter:drop-shadow(0 0 24px rgba(255,69,58,.6));animation:sxBob 3s ease-in-out infinite}
+.ban-box h2{margin:0 0 14px;color:#ff8a80;font-size:26px;letter-spacing:-.4px}
+.ban-box p{margin:0;color:#d8b8b6;font-size:15.5px;line-height:1.7}
+.ban-hint{margin-top:20px!important;font-size:13px!important;color:#a37775!important}
+
+.footer{max-width:1240px;margin:auto auto 0;width:100%;padding:26px 24px 28px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--text-muted);font-size:14px}
+
+@media(max-width:1100px){
+  .nav{flex-wrap:wrap;padding:12px 16px}
+  .nav-links{order:3;width:100%;justify-content:center;margin-top:4px;overflow-x:auto;flex-wrap:wrap}
+  .nav-link{padding:8px 14px;font-size:13.5px}
+}
+@media(max-width:640px){
+  .nav{width:calc(100% - 20px);flex-direction:column;gap:10px;border-radius:24px}
+  .brand{width:100%;justify-content:center}
+  .brand-logo{height:36px}
+  .nav-actions{width:100%;justify-content:center;flex-wrap:wrap}
+  .btn{min-height:40px;padding:0 16px;font-size:13.5px}
+  .hero h1{font-size:clamp(48px,14vw,90px)}
+  .hero h2{letter-spacing:.35em;margin-right:-.35em;font-size:20px}
+  .page{padding:48px 16px 80px}
+  .hero{padding:48px 16px 80px}
+  .admin-form{grid-template-columns:1fr}
+  .admin-panel{padding:20px 16px}
+  .sx-swipe-label{font-size:28px;letter-spacing:.2em}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}.sx-swipe{display:none!important}}
+</style>
+</head>
+<body>
+
+<div class="ban-screen" id="banScreen" hidden>
+  <div class="ban-box">
+    <div class="ban-icon">🚫</div>
+    <h2>Bu siteden sınırsız BAN yedin.</h2>
+    <p>Sunucuya ve siteye artık giriş yapamazsın.</p>
+    <p class="ban-hint">Haksız olduğunu düşünüyorsan Discord üzerinden itiraz edebilirsin.</p>
+  </div>
+</div>
+
+<div class="sx-swipe" id="swipe" aria-hidden="true">
+  <i></i><i></i><i></i><i></i><i></i><i></i>
+  <div class="sx-swipe-label">SontlyX</div>
+</div>
+
+<div class="sx" id="app">
+  <div class="grid"></div>
+
+  <nav class="nav" id="nav">
+    <button class="brand" onclick="go('ana')">
+      <img src="sontlyxnwlogo.png" alt="SontlyX Network" class="brand-logo">
+    </button>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link on" data-nav="ana" onclick="go('ana')">Ana Sayfa</button>
+      <button class="nav-link" data-nav="smp" onclick="go('smp')">SMP</button>
+      <button class="nav-link" data-nav="magaza" onclick="go('magaza')">Mağaza</button>
+      <button class="nav-link" data-nav="kredi" onclick="go('kredi')">Kredi</button>
+      <button class="nav-link" data-nav="admin" onclick="go('admin')">Adminler</button>
+      <button class="nav-link" data-nav="launcher" onclick="go('launcher')">Launcher</button>
+      <button class="nav-link" id="navYonetimLink" data-nav="yonetim" onclick="go('yonetim')" hidden style="color:#000!important;background:#FFF">Yönetim</button>
+    </div>
+    <div class="nav-actions" id="navActions">
+      <!-- Misafir Menüsü -->
+      <div id="guestActions" style="display:flex;gap:10px;align-items:center">
+        <button class="btn b2" onclick="openAuth('login')">Giriş Yap</button>
+        <button class="btn b2 btn-founder" onclick="openFounder()">👑 Kurucu</button>
+        <button class="btn b1" onclick="openAuth('register')">Kayıt Ol</button>
+      </div>
+      <!-- Kullanıcı Menüsü -->
+      <div id="userActions" style="display:none;gap:10px;align-items:center">
+        <button class="profile-btn" onclick="openAccountPanel()">
+          <img id="navHead" class="profile-head" src="" alt="Profil">
+          <span id="navName" class="profile-name">Yükleniyor...</span>
+        </button>
+      </div>
+      <!-- Kurucu Menüsü -->
+      <div id="founderActions" style="display:none;gap:10px;align-items:center">
+        <button class="btn b2" onclick="openAdminPanel()">🛡️ Yönetim Paneli</button>
+        <button class="btn b1" onclick="logoutFounder()">Çıkış</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" data-page="ana">
+    <div class="live-badge"><span class="live-dot"></span>Sunucu çevrimiçi · <span id="playerCount">4.826</span> oyuncu</div>
+    <h1 class="shine">SontlyX</h1>
+    <h2>NETWORK</h2>
+    <p class="lead">Yeni nesil SMP deneyimi. VIP rütbeleri ve kredi paketleriyle oyununu güçlendir.</p>
+    <div class="hero-btns">
+      <button class="btn b1" onclick="go('smp')">SMP'yi Keşfet</button>
+      <button class="btn b2" onclick="go('magaza')">Mağazaya Git</button>
+    </div>
+    <div class="ip-box">
+      <span class="label">SUNUCU IP</span>
+      <span class="value" id="ipValue">sontlyxnw.net</span>
+      <button class="btn b2 ip-copy" onclick="copyIP()">Kopyala</button>
+    </div>
+  </section>
+
+  <section class="page" data-page="ana-features">
+    <div class="grid-3">
+      <button class="card" onclick="go('smp')" style="text-align:center">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22 14 4l10 18z"/></svg></div>
+        <h4>SMP</h4><p>Survival dünyası, ekonomi, takımlar ve daha fazlası.</p><div class="bar"><i></i></div>
+      </button>
+      <button class="card" onclick="go('magaza')">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9h20l-2 13H6zM9 9a5 5 0 0 1 10 0"/></svg></div>
+        <h4>Mağaza</h4><p>VIP rütbeleri ve özel avantajlar.</p><div class="bar"><i></i></div>
+      </button>
+      <button class="card" onclick="go('kredi')">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2"><circle cx="14" cy="14" r="10"/><path d="M14 8v12M10 11h6a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h6"/></svg></div>
+        <h4>Kredi</h4><p>Kredi paketleriyle hızlıca destek ol.</p><div class="bar"><i></i></div>
+      </button>
+    </div>
+  </section>
+
+  <section class="page" data-page="smp" hidden>
+    <div class="tag">SMP</div>
+    <h2 class="big shine">SMP</h2>
+    <p class="lead" style="margin-bottom:52px">Hayatta kal, inşa et, ekonomi kur. Komutlar ve sistemler seni bekliyor.</p>
+    <div class="grid-3" style="text-align:center">
+      <div class="card"><h4>/rtpq</h4><p>Rastgele bir bölgeye ışınlan.</p></div>
+      <div class="card"><h4>/market · /sat</h4><p>Eşyalarını sat, pazardan alışveriş yap.</p></div>
+      <div class="card"><h4>Takımlar</h4><p>Takım kur, birlikte güçlen.</p></div>
+      <div class="card"><h4>/home</h4><p>Evlerini kaydet, tek komutla dön.</p></div>
+    </div>
+    <div style="margin-top:44px"><button class="btn b1" onclick="go('magaza')">VIP Avantajlarına Bak</button></div>
+  </section>
+
+  <section class="page" data-page="magaza" hidden>
+    <div class="tag">MAĞAZA</div>
+    <h2 class="big shine">Mağaza</h2>
+    <p class="lead" style="margin-bottom:26px">SontlyX Network rütbeleriyle özel komutların, kişiselleştirilmiş sohbetin ve daha hızlı RTP'nin keyfini çıkar.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:34px">
+      <button class="btn b2" onclick="go('esya')">✦ Eşyalar</button>
+      <button class="btn b2" onclick="go('spawner')">◈ Spawnerlar</button>
+    </div>
+    <h2 class="big shine" style="font-size:clamp(30px,4vw,46px);letter-spacing:3px;margin:8px auto 30px">VIPLER</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="tag">VIP</div><div class="pr shine">350 Kredi</div>
+        <div style="color:var(--text-muted);margin-bottom:14px">Süre: 1 ay</div>
+        <div class="pk">/ec komutu</div><div class="pk">Özel tag ve chat rengi</div><div class="pk">RTP süresi: 40 saniye</div>
+        <button class="btn b1" style="width:100%;margin-top:22px" onclick="buyItem('VIP', '350 Kredi')">Satın Al</button>
+      </div>
+      <div class="card">
+        <div class="tag">SVIP</div><div class="pr shine">500 Kredi</div>
+        <div style="color:var(--text-muted);margin-bottom:14px">Süre: 2 ay</div>
+        <div class="pk">/ec ve /craft komutları</div><div class="pk">Özel TAB tagi</div><div class="pk">Renkli chat</div><div class="pk">RTP: 30 saniye</div>
+        <button class="btn b1" style="width:100%;margin-top:22px" onclick="buyItem('SVIP', '500 Kredi')">Satın Al</button>
+      </div>
+      <div class="card">
+        <div class="tag">SontlyXVIP</div><div class="pr shine">1000 Kredi</div>
+        <div style="color:var(--text-muted);margin-bottom:14px">Süre: Sınırsız</div>
+        <div class="pk">/ec, /craft, /kit komutları</div><div class="pk">Özel TAB ve chat</div><div class="pk">Renkli görünüm seçenekleri</div><div class="pk">RTP: 5 saniye</div>
+        <button class="btn b1" style="width:100%;margin-top:22px" onclick="buyItem('SontlyXVIP', '1000 Kredi')">Satın Al</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" data-page="esya" hidden>
+    <div class="tag">SONTLYX MARKET</div>
+    <h2 class="big shine">Eşyalar</h2>
+    <p class="lead" style="margin-bottom:26px">Ametist ekipmanlarını keşfet.</p>
+    <button class="btn b2" onclick="go('magaza')" style="margin-bottom:34px">← Mağazaya dön</button>
+    <div class="grid-4" style="text-align:center">
+      <article class="card"><div class="tag">AMETİST</div><div style="font-size:42px;margin:12px 0">🪏</div><h4>Ametist Kürek</h4><div class="pr shine">20 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('Ametist Kürek', '20 Kredi')">Satın Al</button></article>
+      <article class="card"><div class="tag">AMETİST</div><div style="font-size:42px;margin:12px 0">🪓</div><h4>Ametist Balta</h4><div class="pr shine">45 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('Ametist Balta', '45 Kredi')">Satın Al</button></article>
+      <article class="card"><div class="tag">AMETİST</div><div style="font-size:42px;margin:12px 0">⛏️</div><h4>Ametist Kazma</h4><div class="pr shine">50 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('Ametist Kazma', '50 Kredi')">Satın Al</button></article>
+    </div>
+  </section>
+
+  <section class="page" data-page="spawner" hidden>
+    <div class="tag">SONTLYX MARKET</div>
+    <h2 class="big shine">Spawnerlar</h2>
+    <button class="btn b2" onclick="go('magaza')" style="margin-bottom:34px">← Mağazaya dön</button>
+    <div class="grid-4" style="text-align:center">
+      <article class="card"><div class="tag">SPAWNER</div><div style="font-size:42px;margin:12px 0">🕷️</div><h4>Örümcek</h4><div class="pr shine">50 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('Örümcek Spawner', '50 Kredi')">Satın Al</button></article>
+      <article class="card"><div class="tag">SPAWNER</div><div style="font-size:42px;margin:12px 0">🐄</div><h4>İnek</h4><div class="pr shine">50 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('İnek Spawner', '50 Kredi')">Satın Al</button></article>
+      <article class="card"><div class="tag">SPAWNER</div><div style="font-size:42px;margin:12px 0">💥</div><h4>Creeper</h4><div class="pr shine">100 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('Creeper Spawner', '100 Kredi')">Satın Al</button></article>
+      <article class="card"><div class="tag">SPAWNER</div><div style="font-size:42px;margin:12px 0">💀</div><h4>İskelet</h4><div class="pr shine">120 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('İskelet Spawner', '120 Kredi')">Satın Al</button></article>
+      <article class="card"><div class="tag">SPAWNER</div><div style="font-size:42px;margin:12px 0">🗿</div><h4>Iron Golem</h4><div class="pr shine">500 Kredi</div><button class="btn b1" style="width:100%;margin-top:20px" onclick="buyItem('Iron Golem Spawner', '500 Kredi')">Satın Al</button></article>
+    </div>
+  </section>
+
+  <section class="page" data-page="kredi" hidden>
+    <div class="tag">KREDİ</div>
+    <h2 class="big shine">Kredi</h2>
+    <p class="lead" style="margin-bottom:52px">İhtiyacına uygun kredi paketini seç.</p>
+    <div class="grid-4" id="krediPacks" style="text-align:center"></div>
+  </section>
+
+  <section class="page" data-page="admin" hidden>
+    <div class="tag">EKİP</div>
+    <h2 class="big shine">Adminler</h2>
+    <p class="lead" style="margin-bottom:44px">SontlyX Network yönetim ekibi</p>
+    <div id="adminGrid" style="display:flex;justify-content:center;align-items:stretch;flex-wrap:wrap;gap:24px"></div>
+  </section>
+
+  <section class="page" data-page="launcher" hidden>
+    <div class="tag">SONTLYX NETWORK • PC LAUNCHER</div>
+    <h2 class="big shine" style="font-size:clamp(48px,8vw,92px);line-height:1.04;margin:20px 0 14px">SontlyX Launcher</h2>
+    <p class="lead" style="max-width:760px;margin:0 auto">Minecraft deneyimini tek bir yerde yönet. Daha akıcı oyun, sade mod yönetimi ve Crystal PvP odaklı özelliklerle SontlyX dünyasına hazırlan.</p>
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:34px 0 48px">
+      <button class="btn b1" disabled style="opacity:.85;cursor:not-allowed">↓ İndirme yakında</button>
+      <button class="btn b2" onclick="go('smp')">SontlyX Network'i keşfet</button>
+    </div>
+    <div class="grid-4">
+      <article class="card" style="text-align:left"><div style="font-size:26px;margin-bottom:14px">⚡</div><div class="tag">PERFORMANS</div><h4>FPS Boost</h4><p>Performans odaklı optimizasyonlarla daha akıcı bir deneyim.</p></article>
+      <article class="card" style="text-align:left"><div style="font-size:26px;margin-bottom:14px">◆</div><div class="tag">PVP</div><h4>Crystal PvP</h4><p>Crystal PvP oyuncuları için sade ve hızlı istemci.</p></article>
+      <article class="card" style="text-align:left"><div style="font-size:26px;margin-bottom:14px">▦</div><div class="tag">MOD</div><h4>Mod Yöneticisi</h4><p>Desteklenen modları tek ekrandan yönetme.</p></article>
+      <article class="card" style="text-align:left"><div style="font-size:26px;margin-bottom:14px">◈</div><div class="tag">KİŞİSELLEŞTİRME</div><h4>Özel Arayüz</h4><p>SontlyX tasarımı, oyun içi ayarlarla bir arada.</p></article>
+    </div>
+  </section>
+
+  <section class="page" data-page="yonetim" hidden>
+    <div class="tag">YÖNETİM</div>
+    <h2 class="big shine">Yönetim</h2>
+    <p class="lead" style="margin-bottom:34px">Kurucu olarak yönetim paneline buradan ulaşabilirsin.</p>
+    <button class="btn b1" onclick="openAdminPanel()">🛡️ Yönetim Panelini Aç</button>
+  </section>
+
+  <footer class="footer">
+    <span>© SontlyX Network</span>
+    <span><a href="https://discord.gg/g8ztzXRPuU" target="_blank" rel="noopener noreferrer">Discord</a></span>
+  </footer>
+</div>
+
+<!-- SATIN ALMA MODAL -->
+<div class="overlay" id="buyModal" hidden>
+  <div class="modal" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:14px;animation:sxBob 5s ease-in-out infinite;color:var(--text)">✦</div>
+    <h2>Satın alma onayı</h2>
+    <p class="sub" id="buyModalText">Ürünü satın almak üzeresin.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <button class="btn b1" onclick="confirmBuy()">Onayla</button>
+      <button class="btn b2" onclick="closeBuy()">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- HESAP PANELİ MODAL -->
+<div class="overlay" id="accountPanelModal" hidden>
+  <div class="account-panel">
+    <div class="acc-header">
+      <img id="accHeadImg" class="acc-head-img" src="" alt="Kafa">
+      <div class="acc-info">
+        <h3 id="accMcName">Yükleniyor...</h3>
+        <p id="accEmail">...</p>
+      </div>
+      <button class="btn b2 btn-sm" style="margin-left:auto" onclick="closeAccountPanel()">Kapat ✕</button>
+    </div>
+    
+    <div class="acc-balance">
+      <span class="lbl">BAKİYE</span>
+      <span class="val" id="accBalance">0 <span>Kredi</span></span>
+    </div>
+    
+    <h4 class="acc-section-title">🛒 Satın Alma Geçmişi</h4>
+    <div class="acc-list" id="accPurchaseList">
+      <!-- JS ile doldurulacak -->
+    </div>
+    
+    <button class="btn b2 acc-logout-btn" onclick="fbLogout()">Çıkış Yap</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authModal" hidden>
+  <div class="modal">
+    <div style="text-align:center;margin-bottom:18px">
+      <div class="tag">SONTLYX NETWORK</div>
+      <h2 id="authTitle">Tekrar hoş geldin</h2>
+      <p class="sub" id="authSub">SontlyX Network'e tekrar hoş geldin — kaldığın yerden devam et.</p>
+    </div>
+    <div class="auth-tabs" id="authTabs" data-mode="login">
+      <button class="auth-tab on" data-tab="register" onclick="switchAuth('register')">Kayıt Ol</button>
+      <button class="auth-tab" data-tab="login" onclick="switchAuth('login')">Giriş Yap</button>
+    </div>
+
+    <div id="loginForm">
+      <label class="field">E-posta
+        <input id="loginEmail" type="email" placeholder="ornek@eposta.com" autocomplete="email" maxlength="120">
+      </label>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 8px">
+        <span style="font-size:13px;color:var(--text);font-weight:700">Şifre</span>
+        <button type="button" style="font-size:12.5px;color:var(--text);font-weight:600;text-decoration:underline" onclick="forgotPass()">Unuttum?</button>
+      </div>
+      <label class="field"><input id="loginPassword" type="password" placeholder="Şifren" autocomplete="current-password" maxlength="128" style="margin-top:0"></label>
+      <button type="button" class="btn b1" style="width:100%;min-height:50px;margin-top:10px" onclick="submitAuth('login')">Giriş Yap</button>
+    </div>
+
+    <div id="registerForm" hidden>
+      <label class="field">Minecraft kullanıcı adın
+        <input id="regUsername" type="text" placeholder="Oyundaki kullanıcı adın" maxlength="16">
+      </label>
+      <label class="field">E-posta
+        <input id="regEmail" type="email" placeholder="ornek@eposta.com" maxlength="190">
+      </label>
+      <label class="field">Şifre
+        <input id="regPassword" type="password" placeholder="En az 6 karakter" maxlength="128">
+      </label>
+      <label class="check"><input type="checkbox" id="regTerms"><span>Kullanım Koşulları ve Gizlilik metnini okudum, kabul ediyorum.</span></label>
+      <button type="button" class="btn b1" style="width:100%;min-height:50px;margin-top:10px" onclick="submitAuth('register')">Kayıt Ol</button>
+    </div>
+
+    <div class="notice" id="authNotice"></div>
+    <div style="text-align:center;margin-top:16px"><button class="btn b2" onclick="closeAuth()">Kapat</button></div>
+  </div>
+</div>
+
+<!-- KURUCU MODAL -->
+<div class="overlay" id="founderModal" hidden>
+  <div class="modal" style="text-align:center;max-width:420px">
+    <div style="font-size:44px;margin-bottom:10px;color:var(--text)">👑</div>
+    <h2>Kurucu Girişi</h2>
+    <p class="sub">Sadece SontlyX kurucusu buraya giriş yapabilir.</p>
+    <label class="field" style="text-align:left">Şifreyi Girin:
+      <input id="founderPass" type="password" placeholder="••••••••" autocomplete="off" maxlength="64">
+    </label>
+    <div class="notice error" id="founderNotice"></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn b2" style="flex:1" onclick="closeFounder()">İptal</button>
+      <button class="btn b1" style="flex:1" onclick="submitFounder()">Giriş Yap</button>
+    </div>
+  </div>
+</div>
+
+<!-- YÖNETİM PANELİ MODAL -->
+<div class="overlay" id="adminPanelModal" hidden>
+  <div class="admin-panel">
+    <div class="admin-head">
+      <h2>🛡️ Yönetim Paneli</h2>
+      <button class="btn b2 btn-sm" onclick="closeAdminPanel()">Kapat ✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab on" data-atab="users" onclick="switchAdminTab('users')">Kullanıcılar (<span id="usersCount">0</span>)</button>
+      <button class="admin-tab" data-atab="banned" onclick="switchAdminTab('banned')">Banlılar (<span id="bannedCount">0</span>)</button>
+      <button class="admin-tab" data-atab="admins" onclick="switchAdminTab('admins')">Adminler (<span id="adminsCount">0</span>)</button>
+    </div>
+    <div id="adminTabUsers" class="admin-list"></div>
+    <div id="adminTabBanned" class="admin-list" hidden></div>
+    <div id="adminTabAdmins" hidden>
+      <div class="admin-list" id="adminAdminsList"></div>
+      <div class="admin-form">
+        <input id="newAdminMC" type="text" placeholder="Mc ismi (örn: babapiro01)" maxlength="16">
+        <input id="newAdminRole" type="text" placeholder="Rolü (örn: AC Admin)" maxlength="40">
+        <button class="btn b1" onclick="addAdmin()">Ekle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ANA JS: Firebase ile aynı modülde çalışır -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc,
+  deleteDoc, onSnapshot, query, orderBy, arrayUnion, runTransaction
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDx4JdgUB36ZDzBZ-Q5T7Psu38e9J-m97",
+  authDomain: "sontlyxsite.firebaseapp.com",
+  projectId: "sontlyxsite",
+  storageBucket: "sontlyxsite.firebasestorage.app",
+  messagingSenderId: "740921197217",
+  appId: "1:740921197217:web:9117721a4f7b475b4566e0",
+  measurementId: "G-77B358CGYY"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+const FB = {
+  auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser,
+  collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc,
+  onSnapshot, query, orderBy, arrayUnion, runTransaction
+};
+
+
+const FOUNDER_PASS = 'mmz2866bg';
+let currentUser = null;
+let currentUserData = null;
+let botVerified = false;
+let authMode = 'login';
+let adminTab = 'users';
+let navigating = false;
+let tempBuyItem = null;
+let currentPage = 'ana';
+let userSnapshotUnsubscribe = null;
+
+// --- YARDIMCILAR ---
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function isFounder() { return localStorage.getItem('sx_founder_session') === '1'; }
+
+// --- NAV GÖRÜNÜRLÜK ---
+function refreshNav(){
+  const f = isFounder();
+  document.getElementById('guestActions').style.display = (currentUser || f) ? 'none' : 'flex';
+  document.getElementById('userActions').style.display = (currentUser && !f) ? 'flex' : 'none';
+  document.getElementById('founderActions').style.display = f ? 'flex' : 'none';
+  document.getElementById('navYonetimLink').hidden = !f;
+}
+
+// --- SAYFA GEÇİŞ ANİMASYONU ---
+function go(page){
+  if(navigating || page===currentPage) return;
+  const validPages = [...document.querySelectorAll('[data-page]')].map(el=>el.dataset.page);
+  if(!validPages.includes(page)) return;
+  navigating = true;
+
+  const swipe = document.getElementById('swipe');
+  const visiblePages = [...document.querySelectorAll('[data-page]:not([hidden])')];
+  visiblePages.forEach(el=>el.classList.add('page-exit'));
+  swipe.classList.add('active');
+
+  setTimeout(()=>{
+    document.querySelectorAll('[data-page]').forEach(el=>{
+      el.hidden = true;
+      el.classList.remove('page-exit','page-enter');
+    });
+
+    const targets = page==='ana'
+      ? document.querySelectorAll('[data-page="ana"], [data-page="ana-features"]')
+      : document.querySelectorAll(`[data-page="${page}"]`);
+    targets.forEach((el,index)=>{
+      el.hidden = false;
+      el.classList.add('page-enter');
+      el.style.animationDelay = `${index * 70}ms`;
+    });
+
+    document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('on', el.dataset.nav===page));
+    currentPage = page;
+    window.scrollTo({top:0, behavior:'auto'});
+    if(page==='admin') renderAdminlerPage();
+  }, 430);
+
+  setTimeout(()=>swipe.classList.remove('active'), 1050);
+  setTimeout(()=>{
+    document.querySelectorAll('.page-exit, .page-enter').forEach(el=>{
+      el.classList.remove('page-exit','page-enter');
+      el.style.animationDelay='';
+    });
+    navigating = false;
+  }, 1320);
+}
+
+// --- AUTH İŞLEMLERİ ---
+function openAuth(mode='login'){
+  switchAuth(mode); botVerified=false;
+  document.getElementById('authNotice').className='notice';
+  document.getElementById('authModal').hidden=false;
+}
+function closeAuth(){ document.getElementById('authModal').hidden=true; }
+function switchAuth(mode){
+  authMode=mode; const tabs=document.getElementById('authTabs'); tabs.dataset.mode=mode;
+  tabs.querySelectorAll('.auth-tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===mode));
+  document.getElementById('loginForm').hidden=mode!=='login';
+  document.getElementById('registerForm').hidden=mode!=='register';
+  document.getElementById('authTitle').textContent=mode==='register'?'Aramıza katıl':'Tekrar hoş geldin';
+  document.getElementById('authSub').textContent=mode==='register'?'SontlyX Network dünyasına katılmak için hesabını oluştur.':"SontlyX Network'e tekrar hoş geldin — kaldığın yerden devam et.";
+}
+function showNotice(msg,kind=''){ const el=document.getElementById('authNotice'); el.textContent=msg; el.className='notice show '+kind; }
+
+async function submitAuth(type) {
+  const el = document.getElementById('authNotice');
+  el.className = 'notice show';
+  el.textContent = 'İşleniyor...';
+  el.style.color = '#FFF';
+
+  let newlyCreatedUser = null;
+  try {
+    if (type === 'login') {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      if (!email || !pass) throw new Error('Lütfen e-posta ve şifre girin.');
+      await FB.signInWithEmailAndPassword(FB.auth, email, pass);
+      closeAuth();
+    } else {
+      const mcName = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass = document.getElementById('regPassword').value;
+      const terms = document.getElementById('regTerms').checked;
+      if (!/^[A-Za-z0-9_]{3,16}$/.test(mcName)) throw new Error('MC kullanıcı adı 3-16 karakter olmalı.');
+      if (!email.includes('@')) throw new Error('Geçerli bir e-posta girin.');
+      if (pass.length < 6) throw new Error('Şifre en az 6 karakter olmalı.');
+      if (!terms) throw new Error('Lütfen koşulları kabul edin.');
+
+      const userCred = await FB.createUserWithEmailAndPassword(FB.auth, email, pass);
+      newlyCreatedUser = userCred.user;
+      await FB.setDoc(FB.doc(FB.db, "users", userCred.user.uid), {
+        mcName: mcName,
+        email: email,
+        profile: mcName,
+        createdAt: new Date().toLocaleDateString('tr-TR'),
+        purchases: [],
+        isBanned: false,
+        balance: 0
+      });
+      newlyCreatedUser = null;
+      closeAuth();
+    }
+  } catch (err) {
+    if (newlyCreatedUser) {
+      try { await FB.deleteUser(newlyCreatedUser); }
+      catch (cleanupError) { console.error('Auth hesabı temizlenemedi:', cleanupError); }
+    }
+    el.className = 'notice show error';
+    el.textContent = firebaseErrorMessage(err);
+  }
+}
+
+// --- KURUCU İŞLEMLERİ ---
+function openFounder(){ document.getElementById('founderPass').value=''; document.getElementById('founderNotice').className='notice'; document.getElementById('founderModal').hidden=false; }
+function closeFounder(){ document.getElementById('founderModal').hidden=true; }
+function submitFounder(){
+  const p=document.getElementById('founderPass').value; const n=document.getElementById('founderNotice');
+  if(p===FOUNDER_PASS){ localStorage.setItem('sx_founder_session','1'); closeFounder(); refreshNav(); go('yonetim'); }
+  else { n.textContent='❌ Hatalı şifre.'; n.className='notice show error'; }
+}
+function logoutFounder(){ localStorage.removeItem('sx_founder_session'); document.getElementById('adminPanelModal').hidden=true; refreshNav(); go('ana'); }
+
+// --- HESAP PANELİ ---
+function openAccountPanel(){
+  if (!currentUser || !currentUserData) return;
+  document.getElementById('accHeadImg').src = `https://api.mcskin.me/head/${encodeURIComponent(currentUserData.mcName)}?size=128`;
+  document.getElementById('accMcName').textContent = currentUserData.mcName;
+  document.getElementById('accEmail').textContent = currentUserData.email;
+  document.getElementById('accBalance').innerHTML = `${currentUserData.balance || 0} <span>Kredi</span>`;
+
+  const list = document.getElementById('accPurchaseList');
+  if (!currentUserData.purchases || currentUserData.purchases.length === 0) {
+    list.innerHTML = '<div class="acc-empty">Henüz bir satın alım yapmadın.</div>';
+  } else {
+    list.innerHTML = currentUserData.purchases.slice().reverse().map(p => `
+      <div class="acc-item">
+        <div class="acc-item-left">
+          <div class="acc-item-icon">🛒</div>
+          <div>
+            <div class="acc-item-name">${esc(p.name)}</div>
+            <div class="acc-item-date">${esc(p.date)}</div>
+          </div>
+        </div>
+        <div class="acc-item-price">${esc(p.price)}</div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('accountPanelModal').hidden = false;
+}
+function closeAccountPanel(){ document.getElementById('accountPanelModal').hidden=true; }
+
+
+// --- EKSİK BUTON İŞLEVLERİ ---
+async function copyIP(){
+  const value = document.getElementById('ipValue')?.textContent?.trim() || 'sontlyxnw.net';
+  try {
+    await navigator.clipboard.writeText(value);
+    const btn = document.querySelector('.ip-copy');
+    if (btn) {
+      const old = btn.textContent;
+      btn.textContent = 'Kopyalandı ✓';
+      setTimeout(() => btn.textContent = old, 1600);
+    }
+  } catch {
+    alert('Panoya kopyalanamadı. Sunucu IP: ' + value);
+  }
+}
+
+async function forgotPass(){
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) {
+    showNotice('Şifre sıfırlama bağlantısı için önce e-posta adresini gir.', 'error');
+    document.getElementById('loginEmail').focus();
+    return;
+  }
+  try {
+    await FB.sendPasswordResetEmail(FB.auth, email);
+    showNotice('Şifre sıfırlama bağlantısı e-posta adresine gönderildi.', 'ok');
+  } catch (err) {
+    showNotice(firebaseErrorMessage(err), 'error');
+  }
+}
+
+async function fbLogout(){
+  try {
+    closeAccountPanel();
+    await FB.signOut(FB.auth);
+  } catch (err) {
+    alert('Çıkış yapılamadı: ' + firebaseErrorMessage(err));
+  }
+}
+
+function firebaseErrorMessage(err){
+  const code = err?.code || '';
+  const messages = {
+    'auth/email-already-in-use': 'Bu e-posta adresi zaten kayıtlı.',
+    'auth/invalid-email': 'E-posta adresi geçersiz.',
+    'auth/invalid-credential': 'E-posta veya şifre hatalı.',
+    'auth/user-not-found': 'Bu e-posta ile kayıtlı kullanıcı bulunamadı.',
+    'auth/wrong-password': 'Şifre hatalı.',
+    'auth/weak-password': 'Şifre en az 6 karakter olmalı.',
+    'auth/too-many-requests': 'Çok fazla deneme yapıldı. Biraz sonra tekrar dene.',
+    'permission-denied': 'Firebase güvenlik kuralları bu işleme izin vermiyor.',
+    'unavailable': 'Firebase bağlantısına şu anda ulaşılamıyor.'
+  };
+  return messages[code] || String(err?.message || 'Beklenmeyen bir hata oluştu.').replace(/^Firebase:\s*/,'');
+}
+
+// --- SATIN ALMA ---
+function buyItem(name, price) {
+  if (!currentUser) {
+    alert("Satın alma yapmak için giriş yapmalısın!");
+    openAuth('login');
+    return;
+  }
+  tempBuyItem = { name, price, date: new Date().toLocaleDateString('tr-TR') };
+  document.getElementById('buyModalText').textContent = `${name} ürününü ${price} karşılığında satın almak üzeresin.`;
+  document.getElementById('buyModal').hidden = false;
+}
+function closeBuy(){ document.getElementById('buyModal').hidden = true; tempBuyItem = null; }
+
+async function confirmBuy() {
+  if (!tempBuyItem || !currentUser || !currentUserData) {
+    alert('Satın alma için önce giriş yapmalısın.');
+    return;
+  }
+
+  const creditMatch = String(tempBuyItem.price).match(/^(\d+)\s*Kredi$/i);
+  if (!creditMatch) {
+    alert('Bu paket için çevrimiçi ödeme henüz etkinleştirilmemiş. Ödeme sistemi bağlanmadan ücret tahsil edilmez.');
+    return;
+  }
+
+  const cost = Number(creditMatch[1]);
+  const purchase = { ...tempBuyItem };
+  try {
+    const userRef = FB.doc(FB.db, 'users', currentUser.uid);
+    await FB.runTransaction(FB.db, async (transaction) => {
+      const snap = await transaction.get(userRef);
+      if (!snap.exists()) throw new Error('Kullanıcı hesabı bulunamadı.');
+      const data = snap.data();
+      const balance = Number(data.balance || 0);
+      if (balance < cost) throw new Error(`Yetersiz bakiye. Gerekli: ${cost}, mevcut: ${balance} kredi.`);
+      transaction.update(userRef, {
+        balance: balance - cost,
+        purchases: [...(Array.isArray(data.purchases) ? data.purchases : []), purchase]
+      });
+    });
+
+    closeBuy();
+    alert('Satın alma başarılı! Kredi bakiyen güncellendi.');
+    if (!document.getElementById('accountPanelModal').hidden) openAccountPanel();
+  } catch (e) {
+    alert('Satın alma tamamlanamadı: ' + firebaseErrorMessage(e));
+  }
+}
+
+// --- FIREBASE KULLANICI DINLEYICI ---
+FB.onAuthStateChanged(FB.auth, (user) => {
+  if (typeof userSnapshotUnsubscribe === 'function') userSnapshotUnsubscribe();
+  userSnapshotUnsubscribe = null;
+  currentUser = user || null;
+  currentUserData = null;
+  refreshNav();
+
+  if (!user) return;
+
+  userSnapshotUnsubscribe = FB.onSnapshot(
+    FB.doc(FB.db, 'users', user.uid),
+    (docSnap) => {
+      if (!docSnap.exists()) {
+        currentUserData = null;
+        refreshNav();
+        return;
+      }
+      currentUserData = docSnap.data();
+      if (currentUserData.isBanned && !isFounder()) {
+        showBanScreen();
+        return;
+      }
+      const mcName = currentUserData.mcName || user.displayName || 'Oyuncu';
+      const head = document.getElementById('navHead');
+      if (head) head.src = `https://api.mcskin.me/head/${encodeURIComponent(mcName)}?size=64`;
+      const name = document.getElementById('navName');
+      if (name) name.textContent = mcName;
+      refreshNav();
+    },
+    (err) => {
+      console.error('Kullanıcı profili okunamadı:', err);
+      alert('Hesap bilgileri yüklenemedi: ' + firebaseErrorMessage(err));
+    }
+  );
+});
+
+// --- BAN EKRANI ---
+function showBanScreen(){ document.getElementById('banScreen').hidden=false; document.getElementById('app').style.display='none'; }
+
+// --- ADMIN PANEL (KURUCU) ---
+let allUsersCache = [];
+let allAdminsCache = [];
+
+function openAdminPanel(){ if(!isFounder()) return; adminTab='users'; switchAdminTab('users'); document.getElementById('adminPanelModal').hidden=false; }
+function closeAdminPanel(){ document.getElementById('adminPanelModal').hidden=true; }
+function switchAdminTab(tab){
+  adminTab=tab;
+  document.querySelectorAll('[data-atab]').forEach(el=>el.classList.toggle('on',el.dataset.atab===tab));
+  document.getElementById('adminTabUsers').hidden=tab!=='users';
+  document.getElementById('adminTabBanned').hidden=tab!=='banned';
+  document.getElementById('adminTabAdmins').hidden=tab!=='admins';
+  renderAdminPanel();
+}
+
+// Gerçek zamanlı dinleyiciler (Kurucu paneli için)
+FB.onSnapshot(FB.collection(FB.db, 'users'), (snap) => {
+  allUsersCache = [];
+  snap.forEach(d => allUsersCache.push({ uid: d.id, ...d.data() }));
+  if (!document.getElementById('adminPanelModal').hidden) renderAdminPanel();
+}, (err) => console.error('Kullanıcı listesi okunamadı:', err));
+FB.onSnapshot(FB.collection(FB.db, 'admins'), (snap) => {
+  allAdminsCache = [];
+  snap.forEach(d => allAdminsCache.push({ id: d.id, ...d.data() }));
+  if (!document.getElementById('adminPanelModal').hidden) renderAdminPanel();
+  renderAdminlerPage();
+}, (err) => console.error('Admin listesi okunamadı:', err));
+
+function renderAdminPanel(){
+  const users = allUsersCache;
+  const admins = allAdminsCache;
+  document.getElementById('usersCount').textContent = users.length;
+  document.getElementById('bannedCount').textContent = users.filter(u=>u.isBanned).length;
+  document.getElementById('adminsCount').textContent = admins.length;
+
+  const uDiv = document.getElementById('adminTabUsers');
+  uDiv.innerHTML = users.length ? users.map(u => `
+    <div class="admin-item ${u.isBanned?'banned':''}">
+      <div class="admin-item-info">
+        <div class="admin-item-name">
+          <img src="https://api.mcskin.me/head/${encodeURIComponent(u.mcName)}?size=32" style="width:24px;height:24px;border-radius:4px;image-rendering:pixelated">
+          ${esc(u.mcName)} ${u.isBanned?'<span class="badge-ban">BANLI</span>':''}
+        </div>
+        <div class="admin-item-meta">Profil: ${esc(u.profile||u.mcName)} · Kayıt: ${esc(u.createdAt||'—')} · ${esc(u.email||'')}</div>
+      </div>
+      <button class="btn b2 btn-sm" onclick="toggleBan('${u.uid}', ${!!u.isBanned})">${u.isBanned?'Unban':'Banla'}</button>
+    </div>
+  `).join('') : '<div class="admin-empty">Henüz kayıtlı kullanıcı yok.</div>';
+
+  const bDiv = document.getElementById('adminTabBanned');
+  const bannedUsers = users.filter(u=>u.isBanned);
+  bDiv.innerHTML = bannedUsers.length ? bannedUsers.map(u => `
+    <div class="admin-item banned">
+      <div class="admin-item-info">
+        <div class="admin-item-name">${esc(u.mcName)} <span class="badge-ban">BANLI</span></div>
+        <div class="admin-item-meta">${esc(u.email||'')}</div>
+      </div>
+      <button class="btn b2 btn-sm" onclick="toggleBan('${u.uid}', true)">Unban</button>
+    </div>
+  `).join('') : '<div class="admin-empty">Banlı kullanıcı yok.</div>';
+
+  const aDiv = document.getElementById('adminAdminsList');
+  aDiv.innerHTML = admins.length ? admins.map(a => `
+    <div class="admin-item">
+      <div class="admin-item-info">
+        <div class="admin-item-name">${esc(a.mcName)}</div>
+        <div class="admin-item-meta">Rol: ${esc(a.role)}</div>
+      </div>
+      <button class="btn b2 btn-sm" onclick="removeAdmin('${a.id}')">Sil</button>
+    </div>
+  `).join('') : '<div class="admin-empty">Henüz admin eklenmedi.</div>';
+}
+
+async function toggleBan(uid, currentStatus) {
+  try {
+    await FB.updateDoc(FB.doc(FB.db, 'users', uid), { isBanned: !currentStatus });
+  } catch (err) {
+    alert('Ban işlemi başarısız: ' + firebaseErrorMessage(err));
+  }
+}
+
+async function addAdmin() {
+  const mc = document.getElementById('newAdminMC').value.trim();
+  const role = document.getElementById('newAdminRole').value.trim();
+  if (!mc || !role) return alert('Mc ismi ve rol gerekli.');
+  try {
+    await FB.setDoc(FB.doc(FB.db, 'admins', mc.toLowerCase()), { mcName: mc, role });
+    document.getElementById('newAdminMC').value = '';
+    document.getElementById('newAdminRole').value = '';
+  } catch (err) {
+    alert('Admin eklenemedi: ' + firebaseErrorMessage(err));
+  }
+}
+
+async function removeAdmin(id) {
+  if (!confirm('Bu admin kaydını silmek istiyor musun?')) return;
+  try {
+    await FB.deleteDoc(FB.doc(FB.db, 'admins', id));
+  } catch (err) {
+    alert('Admin silinemedi: ' + firebaseErrorMessage(err));
+  }
+}
+
+// --- ADMİNLER SAYFASI (HERKESE AÇIK) ---
+function renderAdminlerPage(){
+  const grid = document.getElementById('adminGrid');
+  const founderCard = `<div class="card admin-card"><div class="admin-avatar"><img src="https://api.mcskin.me/head/SontlyX?size=128" alt="SontlyX" onerror="this.parentElement.classList.add('unavailable');this.style.display='none'"></div><div class="admin-role">KURUCU</div><div class="admin-name">SontlyX</div></div>`;
+  
+  const adminCards = allAdminsCache.map(a => `
+    <div class="card admin-card">
+      <div class="admin-avatar"><img src="https://api.mcskin.me/head/${encodeURIComponent(a.mcName)}?size=128" alt="${esc(a.mcName)}" onerror="this.parentElement.classList.add('unavailable');this.style.display='none'"></div>
+      <div class="admin-role">${esc(a.role)}</div>
+      <div class="admin-name">${esc(a.mcName)}</div>
+    </div>
+  `).join('');
+  
+  grid.innerHTML = founderCard + adminCards;
+}
+
+// --- KREDİ PAKETLERİ & DİĞER ---
+function renderKredi(){
+  const packs=[{n:'1',amount:'350',price:'100 TL'},{n:'2',amount:'650',price:'150 TL'},{n:'3',amount:'1000',price:'300 TL'},{n:'4',amount:'3000',price:'500 TL'}];
+  document.getElementById('krediPacks').innerHTML=packs.map(p=>`<div class="card"><div class="tag">PAKET ${p.n}</div><div class="pr shine">${p.amount} Kredi</div><div style="margin-bottom:14px;color:var(--text-muted)">Fiyat: <strong>${p.price}</strong></div><button class="btn b1" onclick="buyItem('${p.amount} Kredi Paketi', '${p.price}')">Satın Al</button></div>`).join('');
+}
+function startPlayerTick(){ setInterval(()=>{ const el=document.getElementById('playerCount'); if(!el) return; const n=Number(String(el.textContent).replace(/\./g,''))||4826; const x=Math.max(2000,Math.min(10000,n+Math.floor(Math.random()*91)-45)); el.textContent=x.toLocaleString('de-DE'); },3200); }
+
+// --- BAŞLANGIÇ ---
+document.addEventListener('DOMContentLoaded',()=>{
+  renderKredi();
+  startPlayerTick();
+  refreshNav();
+  // İlk sayfayı göster
+  document.querySelectorAll('[data-page]').forEach(el=>{ el.hidden = el.getAttribute('data-page')!=='ana' && el.getAttribute('data-page')!=='ana-features'; });
+  currentPage = 'ana';
+});
+
+['authModal','buyModal','founderModal','adminPanelModal','accountPanelModal'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('click',e=>{ if(e.target===el) el.hidden=true; });
+});
+
+// HTML içindeki onclick çağrıları modül kapsamındaki fonksiyonlara erişebilsin.
+Object.assign(window, {
+  go, openAuth, openFounder, openAccountPanel, openAdminPanel, logoutFounder,
+  copyIP, closeAuth, switchAuth, forgotPass, submitAuth, closeFounder,
+  submitFounder, closeAdminPanel, switchAdminTab, addAdmin, removeAdmin,
+  toggleBan, closeAccountPanel, fbLogout, buyItem, confirmBuy, closeBuy
+});
+
+// Firebase SDK yüklenemediğinde hata konsolda açıkça görülsün.
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('İşlem hatası:', event.reason);
+});
+
+</script>
+</body>
+</html>
