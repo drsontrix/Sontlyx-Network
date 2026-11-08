@@ -1,1 +1,136 @@
-YAKINDA SIZLERLEYIZ
+
+<style>
+.sontlyx-coming {
+    position: relative;
+    max-width: 650px;
+    margin: 45px auto;
+    padding: 55px 25px;
+    overflow: hidden;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 25px;
+    background: linear-gradient(135deg,
+        rgba(48,51,58,.96),
+        rgba(20,22,26,.98));
+    box-shadow: 0 20px 60px rgba(0,0,0,.28);
+    animation: sxFloat 4s ease-in-out infinite;
+}
+
+.sontlyx-coming::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -50%;
+    width: 200%;
+    height: 300%;
+    background: linear-gradient(
+        115deg,
+        transparent 40%,
+        rgba(255,255,255,.09) 50%,
+        transparent 60%
+    );
+    transform: rotate(15deg);
+    animation: sxShine 6s linear infinite;
+    pointer-events: none;
+}
+
+.sx-label {
+    color: #aeb5bf;
+    font-size: 11px;
+    letter-spacing: 5px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.sx-title {
+    position: relative;
+    color: #fff;
+    font-size: clamp(23px, 5vw, 38px);
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 0;
+    text-shadow: 0 0 25px rgba(120,220,210,.2);
+}
+
+.sx-dots span {
+    display: inline-block;
+    animation: sxDot 1.4s infinite;
+}
+
+.sx-dots span:nth-child(2) { animation-delay: .2s; }
+.sx-dots span:nth-child(3) { animation-delay: .4s; }
+
+.sx-description {
+    color: #aeb5bf;
+    font-size: 14px;
+    margin-top: 18px;
+}
+
+.sx-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 25px;
+    padding: 9px 17px;
+    border-radius: 30px;
+    color: #d8e5e2;
+    background: rgba(114,217,206,.09);
+    border: 1px solid rgba(114,217,206,.2);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.sx-status i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #72d9ce;
+    box-shadow: 0 0 12px #72d9ce;
+    animation: sxPulse 1.5s infinite;
+}
+
+@keyframes sxFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+@keyframes sxShine {
+    0% { transform: translateX(-60%) rotate(15deg); }
+    100% { transform: translateX(60%) rotate(15deg); }
+}
+
+@keyframes sxDot {
+    0%, 60%, 100% { opacity: .25; }
+    30% { opacity: 1; }
+}
+
+@keyframes sxPulse {
+    50% { opacity: .35; transform: scale(.75); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sontlyx-coming,
+    .sontlyx-coming::before,
+    .sx-dots span,
+    .sx-status i {
+        animation: none;
+    }
+}
+</style>
+
+<div class="sontlyx-coming">
+    <div class="sx-label">SONTLYX NETWORK</div>
+
+    <h2 class="sx-title">
+        YAKINDA SİZLERLEYİZ<span class="sx-dots"><span>.</span><span>.</span><span>.</span></span>
+    </h2>
+
+    <div class="sx-description">
+        Yeni deneyim çok yakında burada.
+    </div>
+
+    <div class="sx-status">
+        <i></i>
+        HAZIRLANIYOR
+    </div>
+</div>
