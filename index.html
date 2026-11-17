@@ -120,7 +120,6 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
     <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--bd);">
       <p class="s" style="margin-bottom:8px;">Kurucu şifresi ile geçici ban kaldırma:</p>
       <div style="display:flex;gap:8px;justify-content:center;">
-        <!-- Şifre otomatik gelmesin diye value="" ve type="password" -->
         <input class="inp" id="banPass" type="password" placeholder="Kurucu şifresi..." value="" style="max-width:200px;">
         <button class="btn b1" onclick="tempUnban()">Kaldır</button>
       </div>
@@ -417,13 +416,18 @@ async function submitAuth(type){
   }catch(err){if(nu)try{await Au.deleteUser(nu)}catch{}note(n,fe(err),'err')}
 }
 async function forgot(){const e=$('lE').value.trim(),n=$('aN');if(!e)return note(n,'Önce e-posta adresini gir.','err');try{await Au.sendPasswordResetEmail(auth,e);note(n,'Şifre sıfırlama bağlantısı gönderildi.','ok')}catch(x){note(n,fe(x),'err')}}
+
 async function fbLogout(){
   cl('accM');
-  // Çıkış yaparken geçici ban sayacını sıfırla
   if(tempUnbanTimer) clearInterval(tempUnbanTimer);
-  delete $('tempBanScreen').dataset.active;
+  delete $('tempBanScreen')?.dataset.active;
   $('topTempBanBar').hidden = true;
-  try{await Au.signOut(auth)}catch(e){alert('Çıkış yapılamadı: '+fe(e))}
+  try{
+    await Au.signOut(auth);
+    // Çıkış yapınca kurucu oturumunu da temizle
+    localStorage.removeItem('sx_founder_session');
+    nav(); applyM(); go('ana');
+  }catch(e){alert('Çıkış yapılamadı: '+fe(e))}
 }
 
 Au.onAuthStateChanged(auth,u=>{
@@ -433,7 +437,9 @@ Au.onAuthStateChanged(auth,u=>{
     if(!s.exists()){cud=null;return}
     cud=s.data();
     
-    const b = !!cud.isBanned && !isF() && !$('tempBanScreen').dataset.active;
+    // Geçici ban kontrolü (üst bar aktifse banlı gösterme)
+    const isTempUnbanned = $('topTempBanBar').hidden === false;
+    const b = !!cud.isBanned && !isF() && !isTempUnbanned;
     $('banScreen').hidden = !b;
     
     if(b){$('app').style.display='none';return}
@@ -450,12 +456,10 @@ window.tempUnban = () => {
   const pass = $('banPass').value.trim();
   if(pass === FOUNDER_PASS) {
     $('banPassMsg').textContent = '';
-    $('banPass').value = ''; // Şifreyi kutudan temizle
+    $('banPass').value = '';
     $('banScreen').hidden = true;
     $('app').style.display = '';
-    $('topTempBanBar').hidden = false; // Üst barı göster
-    
-    $('tempBanScreen').dataset.active = 'true';
+    $('topTempBanBar').hidden = false;
     
     let timeLeft = 60;
     $('topBanTimer').textContent = '01:00';
@@ -469,9 +473,7 @@ window.tempUnban = () => {
       
       if(timeLeft <= 0) {
         clearInterval(tempUnbanTimer);
-        delete $('tempBanScreen').dataset.active;
-        $('topTempBanBar').hidden = true; // Üst barı gizle
-        
+        $('topTempBanBar').hidden = true;
         if(cud && cud.isBanned) {
           $('banScreen').hidden = false;
           $('app').style.display = 'none';
@@ -490,7 +492,6 @@ function logoutF(){
   cl('admM');nav();applyM();go('ana');
   if(unFriendReq)unFriendReq();if(unFriendList)unFriendList();if(unSentReq)unSentReq();
   if(tempUnbanTimer) clearInterval(tempUnbanTimer);
-  delete $('tempBanScreen').dataset.active;
   $('topTempBanBar').hidden = true;
 }
 
