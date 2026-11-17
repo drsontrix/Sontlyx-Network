@@ -324,7 +324,7 @@ import * as Fs from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firesto
 const app=initializeApp({apiKey:"AIzaSyD7jQUsoZsDC8Z9iiaEbAvI4ZVxkBSBr4c",authDomain:"sontlyxnetwork.firebaseapp.com",projectId:"sontlyxnetwork",storageBucket:"sontlyxnetwork.firebasestorage.app",messagingSenderId:"569986419300",appId:"1:569986419300:web:59b7aef5b1099860fb2d71",measurementId:"G-5E0SZW1K0C"});
 const auth=Au.getAuth(app),db=Fs.getFirestore(app);
 
-const IP='sontlyxnw.net',FOUNDER_MC='SontlyX',FOUNDER_PASS='mmz2866bg';
+const IP='ascene.net',FOUNDER_MC='SontlyX',FOUNDER_PASS='mmz2866bg';
 let cu=null,cud=null,tmp=null,maint=false,unU=null,chatOn=false,file=null,last=0,uOn=false,users=[],admins=[],mode='login',pinnedId=null, unFriendReq=null, unFriendList=null, unSentReq=null, unDM=null, activeDMTarget=null, tempUnbanTimer=null;
 const $=i=>document.getElementById(i);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -424,7 +424,6 @@ async function fbLogout(){
   $('topTempBanBar').hidden = true;
   try{
     await Au.signOut(auth);
-    // Çıkış yapınca kurucu oturumunu da temizle
     localStorage.removeItem('sx_founder_session');
     nav(); applyM(); go('ana');
   }catch(e){alert('Çıkış yapılamadı: '+fe(e))}
@@ -437,7 +436,6 @@ Au.onAuthStateChanged(auth,u=>{
     if(!s.exists()){cud=null;return}
     cud=s.data();
     
-    // Geçici ban kontrolü (üst bar aktifse banlı gösterme)
     const isTempUnbanned = $('topTempBanBar').hidden === false;
     const b = !!cud.isBanned && !isF() && !isTempUnbanned;
     $('banScreen').hidden = !b;
@@ -451,7 +449,6 @@ Au.onAuthStateChanged(auth,u=>{
   },e=>console.error(e));
 });
 
-// Geçici Ban Kaldırma
 window.tempUnban = () => {
   const pass = $('banPass').value.trim();
   if(pass === FOUNDER_PASS) {
