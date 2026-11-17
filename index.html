@@ -83,34 +83,21 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
 .req-btns{margin-left:auto;display:flex;gap:4px;}
 .req-btns button{background:rgba(255,255,255,.1);border:1px solid var(--bd);padding:2px 6px;border-radius:6px;font-size:10px;cursor:pointer;}
 
-/* Sayfa Geçiş Animasyonu (Page Transition) */
-#page-transition {
-  position: fixed; inset: 0; z-index: 999999;
-  background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.4s ease-in-out;
-}
+/* Sayfa Geçiş Animasyonu */
+#page-transition { position: fixed; inset: 0; z-index: 999999; background: var(--bg); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease-in-out; }
 #page-transition.active { opacity: 1; pointer-events: all; }
-#page-transition-text {
-  font-size: 56px; font-weight: 800; letter-spacing: -.04em;
-  background: linear-gradient(100deg,#A1A1AA,#fff 22%,#F4F4F5 32%,#A1A1AA 46%,#fff 60%,#F4F4F5);
-  background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: sh 3s ease-in-out infinite;
-  transform: translateY(20px) scale(0.9);
-  transition: transform 0.4s ease-in-out;
-}
-#page-transition.active #page-transition-text {
-  transform: translateY(0) scale(1);
-}
+#page-transition-text { font-size: 56px; font-weight: 800; letter-spacing: -.04em; background: linear-gradient(100deg,#A1A1AA,#fff 22%,#F4F4F5 32%,#A1A1AA 46%,#fff 60%,#F4F4F5); background-size: 260% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sh 3s ease-in-out infinite; transform: translateY(20px) scale(0.9); transition: transform 0.4s ease-in-out; }
+#page-transition.active #page-transition-text { transform: translateY(0) scale(1); }
 
-/* Ban Geçici Kaldırma Ekranı */
-.ban-temp {
-  position: fixed; inset: 0; z-index: 999999; background: #050506;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; color: #F4F4F5; text-align: center;
+/* Üst Bar (Geçici Ban Sayacı) */
+#topTempBanBar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30, 30, 32, 0.95); border-bottom: 2px solid #ff8a80;
+  padding: 12px; text-align: center; font-weight: 600; font-size: 16px;
+  color: #fff; display: flex; justify-content: center; align-items: center; gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
 }
-.ban-temp h2 { color: #a6f0b6; margin-bottom: 10px; font-size: 32px; }
-.ban-temp .timer { font-size: 64px; font-weight: 800; color: #fff; letter-spacing: 2px; }
+#topTempBanBar span { color: #ff8a80; font-size: 20px; font-weight: 800; }
 </style></head>
 <body>
 <!-- Geçiş Ekranı -->
@@ -118,12 +105,9 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
   <div id="page-transition-text">Ascene</div>
 </div>
 
-<!-- Geçici Ban Kaldırma Ekranı -->
-<div id="tempBanScreen" class="ban-temp" hidden>
-  <h2>Banınız Geçici Olarak Kaldırıldı!</h2>
-  <p class="s" style="font-size:16px;margin-bottom:20px;">Kurucu şifresi doğru. Kalan süre:</p>
-  <div class="timer" id="tempBanTimer">01:00</div>
-  <p class="s" style="margin-top:20px;">Süre bitince banınız devam edecek.</p>
+<!-- Geçici Ban Üst Barı -->
+<div id="topTempBanBar" hidden>
+  ⏳ Kurucu şifresiyle geçici ban kaldırıldı! Kalan süre: <span id="topBanTimer">01:00</span>
 </div>
 
 <div class="full" id="banScreen" hidden>
@@ -136,7 +120,8 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
     <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--bd);">
       <p class="s" style="margin-bottom:8px;">Kurucu şifresi ile geçici ban kaldırma:</p>
       <div style="display:flex;gap:8px;justify-content:center;">
-        <input class="inp" id="banPass" type="password" placeholder="Kurucu şifresi..." style="max-width:200px;">
+        <!-- Şifre otomatik gelmesin diye value="" ve type="password" -->
+        <input class="inp" id="banPass" type="password" placeholder="Kurucu şifresi..." value="" style="max-width:200px;">
         <button class="btn b1" onclick="tempUnban()">Kaldır</button>
       </div>
       <p id="banPassMsg" class="s" style="color:#ff8a80;margin-top:6px;height:16px;"></p>
@@ -432,7 +417,14 @@ async function submitAuth(type){
   }catch(err){if(nu)try{await Au.deleteUser(nu)}catch{}note(n,fe(err),'err')}
 }
 async function forgot(){const e=$('lE').value.trim(),n=$('aN');if(!e)return note(n,'Önce e-posta adresini gir.','err');try{await Au.sendPasswordResetEmail(auth,e);note(n,'Şifre sıfırlama bağlantısı gönderildi.','ok')}catch(x){note(n,fe(x),'err')}}
-async function fbLogout(){cl('accM');try{await Au.signOut(auth)}catch(e){alert('Çıkış yapılamadı: '+fe(e))}}
+async function fbLogout(){
+  cl('accM');
+  // Çıkış yaparken geçici ban sayacını sıfırla
+  if(tempUnbanTimer) clearInterval(tempUnbanTimer);
+  delete $('tempBanScreen').dataset.active;
+  $('topTempBanBar').hidden = true;
+  try{await Au.signOut(auth)}catch(e){alert('Çıkış yapılamadı: '+fe(e))}
+}
 
 Au.onAuthStateChanged(auth,u=>{
   unU?.();unU=null;cu=u;cud=null;nav();applyM();
@@ -441,7 +433,6 @@ Au.onAuthStateChanged(auth,u=>{
     if(!s.exists()){cud=null;return}
     cud=s.data();
     
-    // Ban kontrolü (Geçici ban süresi dolmadıysa banlı say)
     const b = !!cud.isBanned && !isF() && !$('tempBanScreen').dataset.active;
     $('banScreen').hidden = !b;
     
@@ -459,26 +450,28 @@ window.tempUnban = () => {
   const pass = $('banPass').value.trim();
   if(pass === FOUNDER_PASS) {
     $('banPassMsg').textContent = '';
+    $('banPass').value = ''; // Şifreyi kutudan temizle
     $('banScreen').hidden = true;
     $('app').style.display = '';
-    $('tempBanScreen').hidden = false;
+    $('topTempBanBar').hidden = false; // Üst barı göster
+    
     $('tempBanScreen').dataset.active = 'true';
     
     let timeLeft = 60;
-    $('tempBanTimer').textContent = '01:00';
+    $('topBanTimer').textContent = '01:00';
     
     if(tempUnbanTimer) clearInterval(tempUnbanTimer);
     tempUnbanTimer = setInterval(() => {
       timeLeft--;
       const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
       const s = (timeLeft % 60).toString().padStart(2, '0');
-      $('tempBanTimer').textContent = `${m}:${s}`;
+      $('topBanTimer').textContent = `${m}:${s}`;
       
       if(timeLeft <= 0) {
         clearInterval(tempUnbanTimer);
         delete $('tempBanScreen').dataset.active;
-        $('tempBanScreen').hidden = true;
-        // Banı tekrar aktif et
+        $('topTempBanBar').hidden = true; // Üst barı gizle
+        
         if(cud && cud.isBanned) {
           $('banScreen').hidden = false;
           $('app').style.display = 'none';
@@ -492,7 +485,14 @@ window.tempUnban = () => {
 
 function openF(){$('fP').value='';$('fN').className='nt err';$('founderM').hidden=false}
 function submitF(){if($('fP').value===FOUNDER_PASS){localStorage.setItem('sx_founder_session','1');cl('founderM');nav();applyM();go('yonetim');listenFriends();}else note($('fN'),'❌ Hatalı şifre.','err')}
-function logoutF(){localStorage.removeItem('sx_founder_session');cl('admM');nav();applyM();go('ana');if(unFriendReq)unFriendReq();if(unFriendList)unFriendList();if(unSentReq)unSentReq();}
+function logoutF(){
+  localStorage.removeItem('sx_founder_session');
+  cl('admM');nav();applyM();go('ana');
+  if(unFriendReq)unFriendReq();if(unFriendList)unFriendList();if(unSentReq)unSentReq();
+  if(tempUnbanTimer) clearInterval(tempUnbanTimer);
+  delete $('tempBanScreen').dataset.active;
+  $('topTempBanBar').hidden = true;
+}
 
 function openAcc(){if(!cud)return;$('aH').src=head(cud.mcName,128);$('aM').textContent=cud.mcName;$('aE').textContent=cud.email;$('aB').innerHTML=`${+cud.balance||0} <span class="s">Kredi</span>`;const p=cud.purchases||[];$('aL').innerHTML=p.length?p.slice().reverse().map(x=>`<div class="row"><div style="text-align:left"><b>${esc(x.name)}</b><div class="s">${esc(x.date)}</div></div><b>${esc(x.price)}</b></div>`).join(''):'<p class="sub">Henüz bir satın alım yapmadın.</p>';$('accM').hidden=false}
 function buyItem(n,p){if(!cu){alert('Satın alma için giriş yapmalısın!');openAuth('login');return}tmp={name:n,price:p,date:new Date().toLocaleDateString('tr-TR')};$('buyT').textContent=`${n} ürününü ${p} karşılığında satın almak üzeresin.`;$('buyM').hidden=false}
@@ -630,7 +630,6 @@ async function sendFriendReq(){
 
   const myUid = isF() ? 'founder_uid' : cu.uid;
   
-  // Zaten istek atılmış mı kontrol et
   const qCheck = Fs.query(Fs.collection(db,'friend_requests'), Fs.where('fromUid', '==', myUid), Fs.where('toUid', '==', targetUid), Fs.where('status','==','pending'));
   const snapCheck = await Fs.getDocs(qCheck);
   if(!snapCheck.empty) return alert("Zaten bu kişiye istek gönderdin. Kabul etmesini bekle.");
@@ -655,7 +654,6 @@ function listenFriends(){
   if(unFriendList) unFriendList();
   if(unSentReq) unSentReq();
 
-  // Gelen istekler
   unFriendReq = Fs.onSnapshot(Fs.query(Fs.collection(db,'friend_requests'), Fs.where('toUid', '==', myUid), Fs.where('status','==','pending')), snap => {
     const reqBox = $('reqBox');
     if(snap.empty) { reqBox.innerHTML = '<div class="s" style="text-align:center;padding:8px;">Gelen istek yok.</div>'; return; }
@@ -671,7 +669,6 @@ function listenFriends(){
     }).join('');
   });
 
-  // Gönderilen istekler
   unSentReq = Fs.onSnapshot(Fs.query(Fs.collection(db,'friend_requests'), Fs.where('fromUid', '==', myUid), Fs.where('status','==','pending')), snap => {
     const box = $('sentReqBox');
     if(snap.empty) { box.innerHTML = '<div class="s" style="text-align:center;padding:8px;">İstek yok.</div>'; return; }
@@ -686,7 +683,6 @@ function listenFriends(){
     }).join('');
   });
 
-  // Arkadaş listesi
   unFriendList = Fs.onSnapshot(Fs.query(Fs.collection(db,'friends'), Fs.where('users', 'array-contains', myUid)), snap => {
     const fList = $('friendList');
     if(snap.empty) { fList.innerHTML = '<div class="s" style="text-align:center;padding:8px;">Kimse yok.</div>'; return; }
