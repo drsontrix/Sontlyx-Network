@@ -76,6 +76,8 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
 .friend-item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;cursor:pointer;transition:background .2s;}
 .friend-item:hover{background:rgba(255,255,255,.1);}
 .friend-item img{width:28px;height:28px;border-radius:50%;image-rendering:pixelated;}
+.friend-del{margin-left:auto;color:#ff8a80;font-size:14px;padding:2px 6px;border-radius:6px;border:1px solid transparent;}
+.friend-del:hover{background:rgba(255,105,97,.15);border-color:rgba(255,105,97,.3);}
 .req-item{display:flex;align-items:center;gap:8px;padding:6px;border-radius:10px;font-size:12px;}
 .req-item img{width:24px;height:24px;border-radius:50%;}
 .req-btns{margin-left:auto;display:flex;gap:4px;}
@@ -101,6 +103,14 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
 #page-transition.active #page-transition-text {
   transform: translateY(0) scale(1);
 }
+
+/* Ban Geçici Kaldırma Ekranı */
+.ban-temp {
+  position: fixed; inset: 0; z-index: 999999; background: #050506;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; color: #F4F4F5; text-align: center;
+}
+.ban-temp h2 { color: #a6f0b6; margin-bottom: 10px; font-size: 32px; }
+.ban-temp .timer { font-size: 64px; font-weight: 800; color: #fff; letter-spacing: 2px; }
 </style></head>
 <body>
 <!-- Geçiş Ekranı -->
@@ -108,7 +118,32 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
   <div id="page-transition-text">Ascene</div>
 </div>
 
-<div class="full" id="banScreen" hidden><div class="fb" style="border-color:rgba(255,69,58,.5)"><div style="font-size:60px">🚫</div><h2 style="color:#ff8a80">Bu siteden sınırsız BAN yedin.</h2><p>Sunucuya ve siteye artık giriş yapamazsın.</p></div></div>
+<!-- Geçici Ban Kaldırma Ekranı -->
+<div id="tempBanScreen" class="ban-temp" hidden>
+  <h2>Banınız Geçici Olarak Kaldırıldı!</h2>
+  <p class="s" style="font-size:16px;margin-bottom:20px;">Kurucu şifresi doğru. Kalan süre:</p>
+  <div class="timer" id="tempBanTimer">01:00</div>
+  <p class="s" style="margin-top:20px;">Süre bitince banınız devam edecek.</p>
+</div>
+
+<div class="full" id="banScreen" hidden>
+  <div class="fb" style="border-color:rgba(255,69,58,.5)">
+    <div style="font-size:60px">🚫</div>
+    <h2 style="color:#ff8a80">Bu siteden sınırsız BAN yedin.</h2>
+    <p>Sunucuya ve siteye artık giriş yapamazsın.</p>
+    <p style="margin-top:18px;font-size:13px">Haksız olduğunu düşünüyorsan Discord üzerinden itiraz edebilirsin.</p>
+    
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--bd);">
+      <p class="s" style="margin-bottom:8px;">Kurucu şifresi ile geçici ban kaldırma:</p>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <input class="inp" id="banPass" type="password" placeholder="Kurucu şifresi..." style="max-width:200px;">
+        <button class="btn b1" onclick="tempUnban()">Kaldır</button>
+      </div>
+      <p id="banPassMsg" class="s" style="color:#ff8a80;margin-top:6px;height:16px;"></p>
+    </div>
+  </div>
+</div>
+
 <div class="full" id="mt" hidden><div class="fb"><div style="font-size:60px">🛠️</div><h2 class="shine">YAKINDA SİZLERLEYİZ</h2><p>Yeni deneyim çok yakında burada. Kısa bir bakım çalışması yapıyoruz.</p></div></div>
 
 <div class="sx" id="app">
@@ -195,6 +230,13 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
           <button class="btn b1 sm" onclick="sendFriendReq()">Ekle</button>
         </div>
         <div id="reqBox" class="side-list" style="max-height:120px;border-top:1px solid var(--bd);">
+          <div class="s" style="text-align:center;padding:8px;">Gelen istek yok.</div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-head">Gönderilen İstekler</div>
+        <div id="sentReqBox" class="side-list" style="max-height:100px;border-top:1px solid var(--bd);">
           <div class="s" style="text-align:center;padding:8px;">İstek yok.</div>
         </div>
       </div>
@@ -299,7 +341,7 @@ const app=initializeApp({apiKey:"AIzaSyD7jQUsoZsDC8Z9iiaEbAvI4ZVxkBSBr4c",authDo
 const auth=Au.getAuth(app),db=Fs.getFirestore(app);
 
 const IP='sontlyxnw.net',FOUNDER_MC='SontlyX',FOUNDER_PASS='mmz2866bg';
-let cu=null,cud=null,tmp=null,maint=false,unU=null,chatOn=false,file=null,last=0,uOn=false,users=[],admins=[],mode='login',pinnedId=null, unFriendReq=null, unFriendList=null, unDM=null, activeDMTarget=null;
+let cu=null,cud=null,tmp=null,maint=false,unU=null,chatOn=false,file=null,last=0,uOn=false,users=[],admins=[],mode='login',pinnedId=null, unFriendReq=null, unFriendList=null, unSentReq=null, unDM=null, activeDMTarget=null, tempUnbanTimer=null;
 const $=i=>document.getElementById(i);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isF=()=>localStorage.getItem('sx_founder_session')==='1';
@@ -328,30 +370,25 @@ function go(p){
   isAnimating = true;
   const overlay = $('page-transition');
 
-  // Menüdeki aktif durumu hemen güncelle (gecikmesin diye)
   document.querySelectorAll('.nl').forEach(e=>e.classList.toggle('on',e.dataset.n===p));
   if(location.hash !== '#'+p) history.replaceState(null, '', '#'+p);
 
-  // 1. Karartma ve "Ascene" yazısını getir
   overlay.classList.add('active');
 
   setTimeout(() => {
-    // 2. Sayfaları değiştir
     document.querySelectorAll('.page').forEach(e=>e.hidden=e.dataset.p!==p);
     scrollTo(0,0);
     if(p==='chat') startChat();
 
-    // 3. Yeni sayfanın yükleme animasyonunu sıfırla ve oynat
     target.style.animation = 'none';
-    target.offsetHeight; // Reflow
+    target.offsetHeight;
     target.style.animation = 'in .5s both';
 
-    // 4. "Ascene" yazısını geri çek
     setTimeout(() => {
       overlay.classList.remove('active');
-      setTimeout(() => { isAnimating = false; }, 400); // Animasyon bitene kadar bekle
-    }, 300); // "Ascene" yazısının ekranda kalma süresi (hızlı)
-  }, 400); // Karartma süresi
+      setTimeout(() => { isAnimating = false; }, 400);
+    }, 300);
+  }, 400);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -402,16 +439,60 @@ Au.onAuthStateChanged(auth,u=>{
   if(!u){$('banScreen').hidden=true;return}
   unU=Fs.onSnapshot(Fs.doc(db,'users',u.uid),s=>{
     if(!s.exists()){cud=null;return}
-    cud=s.data();const b=!!cud.isBanned&&!isF();$('banScreen').hidden=!b;
+    cud=s.data();
+    
+    // Ban kontrolü (Geçici ban süresi dolmadıysa banlı say)
+    const b = !!cud.isBanned && !isF() && !$('tempBanScreen').dataset.active;
+    $('banScreen').hidden = !b;
+    
     if(b){$('app').style.display='none';return}
-    applyM();const n=cud.mcName||u.displayName||'Oyuncu';$('nH').src=head(n,64);$('nN').textContent=n;nav();
+    
+    applyM();
+    const n=cud.mcName||u.displayName||'Oyuncu';
+    $('nH').src=head(n,64);$('nN').textContent=n;nav();
     listenFriends();
   },e=>console.error(e));
 });
 
+// Geçici Ban Kaldırma
+window.tempUnban = () => {
+  const pass = $('banPass').value.trim();
+  if(pass === FOUNDER_PASS) {
+    $('banPassMsg').textContent = '';
+    $('banScreen').hidden = true;
+    $('app').style.display = '';
+    $('tempBanScreen').hidden = false;
+    $('tempBanScreen').dataset.active = 'true';
+    
+    let timeLeft = 60;
+    $('tempBanTimer').textContent = '01:00';
+    
+    if(tempUnbanTimer) clearInterval(tempUnbanTimer);
+    tempUnbanTimer = setInterval(() => {
+      timeLeft--;
+      const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const s = (timeLeft % 60).toString().padStart(2, '0');
+      $('tempBanTimer').textContent = `${m}:${s}`;
+      
+      if(timeLeft <= 0) {
+        clearInterval(tempUnbanTimer);
+        delete $('tempBanScreen').dataset.active;
+        $('tempBanScreen').hidden = true;
+        // Banı tekrar aktif et
+        if(cud && cud.isBanned) {
+          $('banScreen').hidden = false;
+          $('app').style.display = 'none';
+        }
+      }
+    }, 1000);
+  } else {
+    $('banPassMsg').textContent = 'Hatalı şifre!';
+  }
+};
+
 function openF(){$('fP').value='';$('fN').className='nt err';$('founderM').hidden=false}
 function submitF(){if($('fP').value===FOUNDER_PASS){localStorage.setItem('sx_founder_session','1');cl('founderM');nav();applyM();go('yonetim');listenFriends();}else note($('fN'),'❌ Hatalı şifre.','err')}
-function logoutF(){localStorage.removeItem('sx_founder_session');cl('admM');nav();applyM();go('ana');if(unFriendReq)unFriendReq();if(unFriendList)unFriendList();}
+function logoutF(){localStorage.removeItem('sx_founder_session');cl('admM');nav();applyM();go('ana');if(unFriendReq)unFriendReq();if(unFriendList)unFriendList();if(unSentReq)unSentReq();}
 
 function openAcc(){if(!cud)return;$('aH').src=head(cud.mcName,128);$('aM').textContent=cud.mcName;$('aE').textContent=cud.email;$('aB').innerHTML=`${+cud.balance||0} <span class="s">Kredi</span>`;const p=cud.purchases||[];$('aL').innerHTML=p.length?p.slice().reverse().map(x=>`<div class="row"><div style="text-align:left"><b>${esc(x.name)}</b><div class="s">${esc(x.date)}</div></div><b>${esc(x.price)}</b></div>`).join(''):'<p class="sub">Henüz bir satın alım yapmadın.</p>';$('accM').hidden=false}
 function buyItem(n,p){if(!cu){alert('Satın alma için giriş yapmalısın!');openAuth('login');return}tmp={name:n,price:p,date:new Date().toLocaleDateString('tr-TR')};$('buyT').textContent=`${n} ürününü ${p} karşılığında satın almak üzeresin.`;$('buyM').hidden=false}
@@ -548,6 +629,11 @@ async function sendFriendReq(){
   if(!targetUid) return alert("Böyle bir kullanıcı bulunamadı.");
 
   const myUid = isF() ? 'founder_uid' : cu.uid;
+  
+  // Zaten istek atılmış mı kontrol et
+  const qCheck = Fs.query(Fs.collection(db,'friend_requests'), Fs.where('fromUid', '==', myUid), Fs.where('toUid', '==', targetUid), Fs.where('status','==','pending'));
+  const snapCheck = await Fs.getDocs(qCheck);
+  if(!snapCheck.empty) return alert("Zaten bu kişiye istek gönderdin. Kabul etmesini bekle.");
 
   await Fs.addDoc(Fs.collection(db,'friend_requests'), {
     fromUid: myUid,
@@ -567,10 +653,12 @@ function listenFriends(){
   
   if(unFriendReq) unFriendReq();
   if(unFriendList) unFriendList();
+  if(unSentReq) unSentReq();
 
+  // Gelen istekler
   unFriendReq = Fs.onSnapshot(Fs.query(Fs.collection(db,'friend_requests'), Fs.where('toUid', '==', myUid), Fs.where('status','==','pending')), snap => {
     const reqBox = $('reqBox');
-    if(snap.empty) { reqBox.innerHTML = '<div class="s" style="text-align:center;padding:8px;">İstek yok.</div>'; return; }
+    if(snap.empty) { reqBox.innerHTML = '<div class="s" style="text-align:center;padding:8px;">Gelen istek yok.</div>'; return; }
     reqBox.innerHTML = snap.docs.map(d => {
       const data = d.data();
       return `<div class="req-item">
@@ -583,6 +671,22 @@ function listenFriends(){
     }).join('');
   });
 
+  // Gönderilen istekler
+  unSentReq = Fs.onSnapshot(Fs.query(Fs.collection(db,'friend_requests'), Fs.where('fromUid', '==', myUid), Fs.where('status','==','pending')), snap => {
+    const box = $('sentReqBox');
+    if(snap.empty) { box.innerHTML = '<div class="s" style="text-align:center;padding:8px;">İstek yok.</div>'; return; }
+    box.innerHTML = snap.docs.map(d => {
+      const data = d.data();
+      return `<div class="req-item">
+        <img src="${head(data.toName, 24)}"> <span>${esc(data.toName)}</span>
+        <div class="req-btns">
+          <button onclick="Fs.deleteDoc(Fs.doc(db,'friend_requests','${d.id}'))" style="color:#ff8a80;">İptal</button>
+        </div>
+      </div>`;
+    }).join('');
+  });
+
+  // Arkadaş listesi
   unFriendList = Fs.onSnapshot(Fs.query(Fs.collection(db,'friends'), Fs.where('users', 'array-contains', myUid)), snap => {
     const fList = $('friendList');
     if(snap.empty) { fList.innerHTML = '<div class="s" style="text-align:center;padding:8px;">Kimse yok.</div>'; return; }
@@ -592,6 +696,7 @@ function listenFriends(){
       const otherName = data.names[data.users.indexOf(otherUid)];
       return `<div class="friend-item" onclick="openDM('${otherUid}','${esc(otherName)}')">
         <img src="${head(otherName, 28)}"> <span>${esc(otherName)}</span>
+        <button class="friend-del" onclick="event.stopPropagation(); removeFriend('${d.id}')">🗑️</button>
       </div>`;
     }).join('');
   });
@@ -609,6 +714,15 @@ window.acceptReq = async (reqId, fromUid, fromName) => {
   });
   alert("Arkadaş eklendi!");
 };
+
+window.removeFriend = async (docId) => {
+  if(!confirm('Bu arkadaşını silmek istediğine emin misin?')) return;
+  try {
+    await Fs.deleteDoc(Fs.doc(db, 'friends', docId));
+    alert('Arkadaş silindi.');
+  } catch(e) { alert('Hata: ' + e.message); }
+};
+
 window.Fs = Fs;
 
 window.openDM = (targetUid, targetName) => {
@@ -674,6 +788,6 @@ $('ip').textContent=IP;renderAdminPage();nav();
 setInterval(()=>{const e=$('pc'),n=+e.textContent.replace(/\./g, '')||4826;e.textContent=Math.max(2000,Math.min(10000,n+Math.floor(Math.random()*91)-45)).toLocaleString('de-DE')},3200);
 ['authM','buyM','founderM','admM','accM', 'dmM'].forEach(id=>$(id)?.addEventListener('click',e=>{if(e.target===$(id))$(id).hidden=true}));
 
-Object.assign(window,{go,openAuth,sw,submitAuth,forgot,fbLogout,openF,submitF,logoutF,openAcc,buyItem,closeBuy,confirmBuy,copyIP,openAdm,swA,toggleBan,deleteAccount,addAdmin,rmAdmin,pick,sendChat,pinMessage,unpinMessage,deleteMessage,sendFriendReq,acceptReq,openDM,sendDM,cl});
+Object.assign(window,{go,openAuth,sw,submitAuth,forgot,fbLogout,openF,submitF,logoutF,openAcc,buyItem,closeBuy,confirmBuy,copyIP,openAdm,swA,toggleBan,deleteAccount,addAdmin,rmAdmin,pick,sendChat,pinMessage,unpinMessage,deleteMessage,sendFriendReq,acceptReq,openDM,sendDM,removeFriend,tempUnban,cl});
 </script>
 </body></html>
