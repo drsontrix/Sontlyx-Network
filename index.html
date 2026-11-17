@@ -89,7 +89,7 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
   </div>
   <div class="acts">
     <div class="acts" id="gA"><button class="btn b2" onclick="openAuth('login')">Giriş Yap</button><button class="btn b2" onclick="openF()">👑 Kurucu</button><button class="btn b1" onclick="openAuth('register')">Kayıt Ol</button></div>
-    <div class="acts" id="uA" hidden><button class="pbtn" onclick="openAcc()"><img id="nH" src="" alt=""><span id="nN">...</span></button></div>
+    <div class="acts" id="uA" hidden><button class="pbtn" onclick="openAcc()"><img id="nH" src="" alt="" onerror="this.src='https://minotar.net/helm/Steve/64'"><span id="nN">...</span></button></div>
     <div class="acts" id="fA" hidden><button class="btn b2" onclick="openAdm()">🛡️ Yönetim Paneli</button><button class="btn b1" onclick="logoutF()">Çıkış</button></div>
   </div>
 </nav>
@@ -134,7 +134,7 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
 
 <section class="page" data-p="chat" hidden>
   <div class="tag">TOPLULUK</div><h2 class="big shine">Sohbet</h2>
-  <p class="lead" style="margin-bottom:30px">Herkes okuyabilir. Yazmak için giriş yapmalısın. Küfür yasak.</p>
+  <p class="lead" style="margin-bottom:30px">Herkes okuyabilir. Yazmak için giriş yapmalısın. Küfür yasak. <br><small style="color:#ff8a80">(Mesajlar her 5 dakikada bir otomatik silinir)</small></p>
   <div class="chat glass">
     <div id="pinnedMsg" class="pinned" hidden><span>📌</span><span class="pin-text" id="pinnedText"></span><button class="btn b2 sm" onclick="unpinMessage()" style="margin-left:auto;font-size:11px">Kaldır</button></div>
     <div class="msgs" id="msgs"></div>
@@ -177,7 +177,7 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
 <div class="ov" id="buyM" hidden><div class="md" style="text-align:center"><div style="font-size:46px">✦</div><h2>Satın alma onayı</h2><p class="sub" id="buyT"></p><div style="display:flex;gap:12px;justify-content:center"><button class="btn b1" onclick="confirmBuy()">Onayla</button><button class="btn b2" onclick="closeBuy()">İptal</button></div></div></div>
 
 <div class="ov" id="accM" hidden><div class="md" style="width:min(100%,560px)">
-  <div style="display:flex;align-items:center;gap:18px;margin-bottom:20px"><img id="aH" alt="" style="width:72px;height:72px;border-radius:50%;image-rendering:pixelated;object-fit:cover;"><div><h3 id="aM" style="font-size:24px"></h3><p class="s" id="aE"></p></div><button class="btn b2 sm" style="margin-left:auto" onclick="cl('accM')">Kapat ✕</button></div>
+  <div style="display:flex;align-items:center;gap:18px;margin-bottom:20px"><img id="aH" alt="" style="width:72px;height:72px;border-radius:50%;image-rendering:pixelated;object-fit:cover;" onerror="this.src='https://minotar.net/helm/Steve/128'"><div><h3 id="aM" style="font-size:24px"></h3><p class="s" id="aE"></p></div><button class="btn b2 sm" style="margin-left:auto" onclick="cl('accM')">Kapat ✕</button></div>
   <div class="row" style="margin-bottom:20px"><span class="s">BAKİYE</span><b id="aB" style="font-size:26px"></b></div>
   <h4 style="margin-bottom:10px">🛒 Satın Alma Geçmişi</h4><div class="list" id="aL" style="max-height:200px"></div>
   <button class="btn b2" style="width:100%;color:#ffb3ad" onclick="fbLogout()">Çıkış Yap</button>
@@ -219,18 +219,21 @@ button{border:0;background:none;color:inherit;font:inherit;padding:0}a{color:var
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import * as Au from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import * as Fs from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import * as St from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const app=initializeApp({apiKey:"AIzaSyD7jQUsoZsDC8Z9iiaEbAvI4ZVxkBSBr4c",authDomain:"sontlyxnetwork.firebaseapp.com",projectId:"sontlyxnetwork",storageBucket:"sontlyxnetwork.firebasestorage.app",messagingSenderId:"569986419300",appId:"1:569986419300:web:59b7aef5b1099860fb2d71",measurementId:"G-5E0SZW1K0C"});
-const auth=Au.getAuth(app),db=Fs.getFirestore(app),st=St.getStorage(app);
+const auth=Au.getAuth(app),db=Fs.getFirestore(app);
 
 const IP='sontlyxnw.net',FOUNDER_MC='SontlyX',FOUNDER_PASS='mmz2866bg';
 let cu=null,cud=null,tmp=null,maint=false,unU=null,chatOn=false,file=null,last=0,uOn=false,users=[],admins=[],mode='login',pinnedId=null;
 const $=i=>document.getElementById(i);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isF=()=>localStorage.getItem('sx_founder_session')==='1';
-const head=(n,s)=>`https://api.mcskin.me/head/${encodeURIComponent(n)}?size=${s}`;
-const cl=id=>$(id).hidden=true;
+// Kurucu için özel skin (Herobrine)
+const head=(n,s)=>{
+  if(n==='Kurucu') return `https://minotar.net/helm/Herobrine/${s}`;
+  return `https://minotar.net/helm/${encodeURIComponent(n||'Steve')}/${s}`;
+};
+const cl=id=>{$(id).hidden=true;};
 const note=(el,m,k='')=>{el.textContent=m;el.className='nt show '+k};
 const ci=t=>$('cInfo').textContent=t;
 const fe=e=>({'auth/email-already-in-use':'Bu e-posta adresi zaten kayıtlı.','auth/invalid-email':'E-posta adresi geçersiz.','auth/invalid-credential':'E-posta veya şifre hatalı.','auth/wrong-password':'Şifre hatalı.','auth/weak-password':'Şifre en az 6 karakter olmalı.','auth/too-many-requests':'Çok fazla deneme. Biraz sonra tekrar dene.','permission-denied':'Firebase kuralları bu işleme izin vermiyor.','unavailable':'Firebase bağlantısına ulaşılamıyor.','storage/unauthorized':'Dosya yükleme izni yok.'}[e?.code]||String(e?.message||'Beklenmeyen hata.').replace(/^Firebase:\s*/,''));
@@ -240,8 +243,26 @@ const W=new Set('amk amq aq sik sikik ibne pust gavat kahpe fuck shit bitch cunt
 const L='orospu oruspu siktir sikerim yarrak amcik pezevenk gotveren serefsiz fuck bitch nigger asshole'.split(' ').map(col);
 function bad(t){const n=String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/[01345@$]/g,c=>({0:'o',1:'i',3:'e',4:'a',5:'s','@':'a','$':'s'}[c]));const j=col(n.replace(/[^a-z]/g,''));return n.split(/[^a-z]+/).some(w=>W.has(col(w)))||L.some(w=>j.includes(w))}
 
-function go(p){document.querySelectorAll('.page').forEach(e=>e.hidden=e.dataset.p!==p);document.querySelectorAll('.nl').forEach(e=>e.classList.toggle('on',e.dataset.n===p));scrollTo(0,0);if(p==='chat')startChat()}
-function nav(){const f=isF();$('gA').hidden=!!(cu||f);$('uA').hidden=!(cu&&!f);$('fA').hidden=!f;$('nY').hidden=!f;$('cText').placeholder=cu?'Mesajını yaz...':'Yazmak için giriş yapmalısın'}
+function go(p){
+  document.querySelectorAll('.page').forEach(e=>e.hidden=e.dataset.p!==p);
+  document.querySelectorAll('.nl').forEach(e=>e.classList.toggle('on',e.dataset.n===p));
+  scrollTo(0,0);
+  if(p==='chat')startChat();
+  if(location.hash!=='#'+p) history.replaceState(null, '', '#'+p);
+}
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = location.hash.replace('#', '');
+  if (hash && document.querySelector(`.page[data-p="${hash}"]`)) go(hash);
+});
+
+function nav(){
+  const f=isF();
+  $('gA').hidden=!!(cu||f);
+  $('uA').hidden=!(cu&&!f);
+  $('fA').hidden=!f;
+  $('nY').hidden=!f;
+  $('cText').placeholder=(cu||f)?'Mesajını yaz...':'Yazmak için giriş yapmalısın';
+}
 function applyM(){const on=maint&&!isF();$('mt').hidden=!on;$('app').style.display=on?'none':'';$('mBtn').textContent=maint?'🔓 Siteyi Aç':'🔒 Siteyi Kapat'}
 Fs.onSnapshot(Fs.doc(db,'settings','maintenance'),s=>{maint=s.exists()&&!!s.data().enabled;applyM()},()=>{maint=false;applyM()});
 async function toggleM(){if(!isF())return;if(!confirm(maint?'Siteyi AÇMAK üzeresin. Onaylıyor musun?':'Siteyi KAPATMAK üzeresin. Tüm kullanıcılar bakım ekranını görecek. Onaylıyor musun?'))return;try{await Fs.setDoc(Fs.doc(db,'settings','maintenance'),{enabled:!maint,updatedAt:new Date().toISOString()},{merge:true})}catch(e){alert('İşlem başarısız: '+fe(e))}}
@@ -309,7 +330,7 @@ function renderA(){
 }
 async function toggleBan(uid,s){try{await Fs.updateDoc(Fs.doc(db,'users',uid),{isBanned:!s})}catch(e){alert('Ban hatası: '+fe(e))}}
 async function deleteAccount(uid,mcName){
-  if(!confirm(`"${mcName}" adlı kullanıcının SİTE HESABINI kalıcı olarak silmek istediğine emin misin?\n\nBu işlem geri alınamaz. Kullanıcı verileri (Firestore) silinecek, ancak Firebase Auth hesabı kalabilir (Firebase Auth hesabını silmek için Admin SDK gerekir).`))return;
+  if(!confirm(`"${mcName}" adlı kullanıcının SİTE HESABINI kalıcı olarak silmek istediğine emin misin?\n\nBu işlem geri alınamaz.`))return;
   const conf=prompt(`Onaylamak için kullanıcının adını yazın: ${mcName}`);
   if(conf!==mcName)return alert('İsim eşleşmedi, işlem iptal edildi.');
   try{
@@ -319,16 +340,16 @@ async function deleteAccount(uid,mcName){
 }
 async function addAdmin(){const m=$('nM').value.trim(),r=$('nR').value.trim();if(!m||!r)return alert('Mc ismi ve rol gerekli.');try{await Fs.setDoc(Fs.doc(db,'admins',m.toLowerCase()),{mcName:m,role:r});$('nM').value=$('nR').value=''}catch(e){alert('Admin eklenemedi: '+fe(e))}}
 async function rmAdmin(id){if(!confirm('Bu admini silmek istiyor musun?'))return;try{await Fs.deleteDoc(Fs.doc(db,'admins',id))}catch(e){alert('Silinemedi: '+fe(e))}}
-function renderAdminPage(){$('adminGrid').innerHTML=[{mcName:FOUNDER_MC,role:'KURUCU'},...admins].map(a=>`<div class="card glass" style="width:min(100%,300px)"><img src="${head(a.mcName,128)}" alt="" style="width:92px;height:92px;border-radius:50%;image-rendering:pixelated;object-fit:cover;" onerror="this.style.visibility='hidden'"><div class="tag" style="margin-top:14px">${esc(a.role)}</div><h4>${esc(a.mcName)}</h4></div>`).join('')}
+function renderAdminPage(){$('adminGrid').innerHTML=[{mcName:FOUNDER_MC,role:'KURUCU'},...admins].map(a=>`<div class="card glass" style="width:min(100%,300px)"><img src="${head(a.mcName,128)}" alt="" style="width:92px;height:92px;border-radius:50%;image-rendering:pixelated;object-fit:cover;" onerror="this.src='https://minotar.net/helm/Steve/128'"><div class="tag" style="margin-top:14px">${esc(a.role)}</div><h4>${esc(a.mcName)}</h4></div>`).join('')}
 
 const OK=/^(image\/(png|jpe?g|gif|webp)|video\/(mp4|webm))$/;
-const okU=u=>/^https:\/\/firebasestorage\.googleapis\.com\//.test(u||'');
 function msg(m){
   const t=m.ts?.toDate?m.ts.toDate().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}):'';
-  const med=!okU(m.url)?'':m.type==='video'?`<video src="${esc(m.url)}" controls preload="metadata"></video>`:`<img src="${esc(m.url)}" loading="lazy" alt="">`;
+  const med=!m.url?'':m.type==='video'?`<video src="${esc(m.url)}" controls preload="metadata"></video>`:`<img src="${esc(m.url)}" loading="lazy" alt="">`;
   const txt=m.text?`<p>${bad(m.text)?'<i>[Uygunsuz mesaj gizlendi]</i>':esc(m.text)}</p>`:'';
-  const tools=isF()?`<div class="msg-tools"><button onclick="pinMessage('${esc(m.id)}','${esc((m.text||'').replace(/'/g,"\\'"))}')">📌 Sabitle</button><button onclick="deleteMessage('${esc(m.id)}')">🗑️ Sil</button></div>`:'';
-  return `<div class="msg"><img src="${head(m.name||'Steve',64)}" alt=""><div class="bub"><b>${esc(m.name)}</b><small>${t}</small>${txt}${med}</div>${tools}</div>`;
+  const safeText=esc((m.text||'').replace(/'/g,"\\'"));
+  const tools=isF()?`<div class="msg-tools"><button onclick="pinMessage('${esc(m.id)}','${safeText}')">📌 Sabitle</button><button onclick="deleteMessage('${esc(m.id)}')">🗑️ Sil</button></div>`:'';
+  return `<div class="msg"><img src="${head(m.name,64)}" alt="" onerror="this.src='https://minotar.net/helm/Steve/64'"><div class="bub"><b>${esc(m.name)}</b><small>${t}</small>${txt}${med}</div>${tools}</div>`;
 }
 function startChat(){
   if(chatOn)return;chatOn=true;
@@ -339,29 +360,56 @@ function startChat(){
   },e=>ci('Sohbet yüklenemedi: '+fe(e)));
 }
 function pick(i){
-  const f=i.files[0];i.value='';if(!f)return;const v=f.type.startsWith('video'),max=v?30:8;
+  const f=i.files[0];i.value='';if(!f)return;const v=f.type.startsWith('video'),max=v?0.5:1;
   if(!OK.test(f.type))return ci('Sadece resim veya video gönderebilirsin.');
   if(f.size>max*1048576)return ci(`Dosya çok büyük (en fazla ${max} MB).`);
   file=f;ci('📎 '+f.name+' hazır. Göndermek için "Gönder"e bas.');
 }
 async function sendChat(){
-  if(!cu||!cud){ci('Mesaj yazmak için giriş yapmalısın.');openAuth('login');return}
+  if(!cu && !isF()){ci('Mesaj yazmak için giriş yapmalısın.');openAuth('login');return}
   const t=$('cText').value.trim();if(!t&&!file)return;
   if(t&&bad(t))return ci('⚠️ Küfür içeren mesaj gönderilemez.');
   if(Date.now()-last<2000)return ci('Biraz yavaş yaz 🙂');
   last=Date.now();const b=$('cSend');b.disabled=true;
   try{
-    const m={uid:cu.uid,name:cud.mcName,text:t,ts:Fs.serverTimestamp()};
+    // Kurucu ise ismini "Kurucu" yap
+    const isFounder = isF();
+    const senderName = isFounder ? 'Kurucu' : cud.mcName;
+    const senderUid = isFounder ? 'founder_uid' : cu.uid;
+
+    const m={uid: senderUid, name: senderName, text:t, ts:Fs.serverTimestamp()};
+    
     if(file){
-      const r=St.ref(st,`chat/${cu.uid}/${Date.now()}_${file.name.replace(/[^\w.-]/g,'_')}`),k=St.uploadBytesResumable(r,file);
-      await new Promise((ok,no)=>k.on('state_changed',s=>ci('Yükleniyor %'+Math.round(s.bytesTransferred/s.totalBytes*100)),no,ok));
-      m.url=await St.getDownloadURL(r);m.type=file.type.startsWith('video')?'video':'image';
+      ci('⏳ Dosya işleniyor...');
+      // Base64 formatına çevirip Firestore'a kaydediyoruz
+      const reader = new FileReader();
+      const base64Promise = new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      m.url = await base64Promise;
+      m.type = file.type.startsWith('video')?'video':'image';
     }
     await Fs.addDoc(Fs.collection(db,'chat'),m);$('cText').value='';file=null;ci('');
   }catch(e){ci('Gönderilemedi: '+fe(e))}
   b.disabled=false;
 }
-$('cText').addEventListener('focus',()=>{if(!cu){$('cText').blur();openAuth('login')}});
+$('cText').addEventListener('focus',()=>{if(!cu && !isF()){$('cText').blur();openAuth('login')}});
+
+// Her 5 dakikada bir sohbeti silen fonksiyon
+async function clearChatEvery5Mins(){
+  const now = Date.now();
+  const fiveMinsAgo = now - 5 * 60 * 1000;
+  try {
+    const q = Fs.query(Fs.collection(db, 'chat'), Fs.where('ts', '<=', new Date(fiveMinsAgo)));
+    const snap = await Fs.getDocs(q);
+    snap.forEach(async (d) => {
+      await Fs.deleteDoc(Fs.doc(db, 'chat', d.id));
+    });
+  } catch(e) { console.error("Oto silme hatası:", e); }
+}
+setInterval(clearChatEvery5Mins, 60000); // Her dakika kontrol et
 
 async function pinMessage(id,text){
   if(!isF())return;
